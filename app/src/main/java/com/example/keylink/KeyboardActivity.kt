@@ -2,18 +2,17 @@ package com.example.keylink
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-
 import java.io.PrintWriter
 import java.net.Socket
 import kotlin.concurrent.thread
-
-import android.view.MotionEvent
-import android.widget.Button
 
 class KeyboardActivity : AppCompatActivity() {
 
@@ -36,10 +35,13 @@ class KeyboardActivity : AppCompatActivity() {
 
         connectToPc()
         setupTrackpad()
-        setupKeyboard()
+        setupTrackpoint()
+        
+        val container = findViewById<ViewGroup>(R.id.keyboardContainer)
+        setupAllKeys(container)
 
-        val btnLeftKeypad = findViewById<ImageButton>(R.id.btnLeftKeypad)
-        val btnRightKeypad = findViewById<ImageButton>(R.id.btnRightKeypad)
+        val btnLeftTrackpad = findViewById<ImageButton>(R.id.btnLeftTrackpad)
+        val btnRightTrackpad = findViewById<ImageButton>(R.id.btnRightTrackpad)
 
         val openKeypad = View.OnClickListener {
             val intent = Intent(this, KeypadActivity::class.java)
@@ -47,17 +49,45 @@ class KeyboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        btnLeftKeypad.setOnClickListener(openKeypad)
-        btnRightKeypad.setOnClickListener(openKeypad)
+        btnLeftTrackpad.setOnClickListener(openKeypad)
+        btnRightTrackpad.setOnClickListener(openKeypad)
+    }
+
+    private fun setupAllKeys(view: View) {
+        if (view is Button) {
+            view.setOnClickListener {
+                var key = view.text.toString().lowercase()
+                // Map some special characters/names for the PC server
+                key = when (key) {
+                    "↑" -> "up"
+                    "↓" -> "down"
+                    "←" -> "left"
+                    "→" -> "right"
+                    "pgup" -> "pageup"
+                    "pgdn" -> "pagedown"
+                    "ins" -> "insert"
+                    "del" -> "delete"
+                    "prtsc" -> "printscreen"
+                    "bksp" -> "backspace"
+                    else -> key
+                }
+                sendCommand("KEY:$key")
+            }
+        } else if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                setupAllKeys(view.getChildAt(i))
+            }
+        }
     }
 
     private fun setupTrackpad() {
         val trackpad = findViewById<View>(R.id.trackpadView)
-        trackpad.setOnTouchListener { _, event ->
+        trackpad.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     lastX = event.x
                     lastY = event.y
+                    v.performClick()
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -70,27 +100,31 @@ class KeyboardActivity : AppCompatActivity() {
                     lastY = event.y
                     true
                 }
-                MotionEvent.ACTION_UP -> {
-                    // Could implement click on tap here
-                    true
-                }
-                else -> false
+                else -> true
             }
         }
     }
 
-    private fun setupKeyboard() {
-        val keyIds = intArrayOf(
-            R.id.key_q, R.id.key_w, R.id.key_e, R.id.key_r, R.id.key_t, R.id.key_y, R.id.key_u, R.id.key_i, R.id.key_o, R.id.key_p,
-            R.id.key_a, R.id.key_s, R.id.key_d, R.id.key_f, R.id.key_g, R.id.key_h, R.id.key_j, R.id.key_k, R.id.key_l,
-            R.id.key_z, R.id.key_x, R.id.key_c, R.id.key_v, R.id.key_b, R.id.key_n, R.id.key_m,
-            R.id.key_space, R.id.key_backspace, R.id.key_enter, R.id.key_ctrl, R.id.key_alt, R.id.key_shift
-        )
-
-        for (id in keyIds) {
-            findViewById<Button>(id).setOnClickListener { view ->
-                val keyText = (view as Button).text.toString().lowercase()
-                sendCommand("KEY:$keyText")
+    private fun setupTrackpoint() {
+        val trackpoint = findViewById<View>(R.id.trackpoint)
+        trackpoint.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_MOVE -> {
+                    // Trackpoint relative movement
+                    val centerX = v.width / 2f
+                    val centerY = v.height / 2f
+                    val dx = ((event.x - centerX) / 5).toInt()
+                    val dy = ((event.y - centerY) / 5).toInt()
+                    if (dx != 0 || dy != 0) {
+                        sendCommand("MOUSE:$dx,$dy")
+                    }
+                    true
+                }
+                MotionEvent.ACTION_DOWN -> {
+                    v.performClick()
+                    true
+                }
+                else -> true
             }
         }
     }
@@ -100,7 +134,7 @@ class KeyboardActivity : AppCompatActivity() {
             try {
                 socket = Socket(pcIp, 9999)
                 out = PrintWriter(socket!!.getOutputStream(), true)
-                sendCommand("CONNECTED:Android Client")
+                sendCommand("CONNECTED:Android Keyboard")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -119,12 +153,6 @@ class KeyboardActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        thread {
-            try {
-                socket?.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        thread { try { socket?.close() } catch (e: Exception) {} }
     }
 }

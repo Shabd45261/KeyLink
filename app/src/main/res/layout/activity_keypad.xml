@@ -3,29 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="#000000">
+    android:background="#121212">
 
+    <!-- Large Trackpad Area -->
+    <View
+        android:id="@+id/largeTrackpad"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#1A1A1A"
+        android:layout_margin="8dp" />
+
+    <!-- Mouse Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:padding="8dp">
+        <Button
+            android:id="@+id/btnLeftClick"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="L-Click"
+            android:layout_marginEnd="4dp"/>
+        <Button
+            android:id="@+id/btnRightClick"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="R-Click"
+            android:layout_marginStart="4dp"/>
+    </LinearLayout>
+
+    <!-- Keypad at bottom -->
     <GridLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
-        android:rowCount="4"
-        android:padding="16dp">
+        android:padding="8dp"
+        android:layout_gravity="center">
 
-        <Button android:id="@+id/num_1" android:text="1" />
-        <Button android:id="@+id/num_2" android:text="2" />
-        <Button android:id="@+id/num_3" android:text="3" />
-        <Button android:id="@+id/num_4" android:text="4" />
-        <Button android:id="@+id/num_5" android:text="5" />
-        <Button android:id="@+id/num_6" android:text="6" />
-        <Button android:id="@+id/num_7" android:text="7" />
-        <Button android:id="@+id/num_8" android:text="8" />
-        <Button android:id="@+id/num_9" android:text="9" />
-        <Button android:id="@+id/num_dot" android:text="." />
-        <Button android:id="@+id/num_0" android:text="0" />
-        <Button android:id="@+id/num_enter" android:text="Enter" />
-
+        <Button android:id="@+id/num_1" android:text="1" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_2" android:text="2" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_3" android:text="3" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_4" android:text="4" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_5" android:text="5" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_6" android:text="6" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_7" android:text="7" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_8" android:text="8" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_9" android:text="9" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_dot" android:text="." style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_0" android:text="0" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
+        <Button android:id="@+id/num_enter" android:text="Enter" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
     </GridLayout>
 
 </LinearLayout>
