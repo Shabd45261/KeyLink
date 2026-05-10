@@ -3,6 +3,7 @@ package com.example.keylink
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import java.io.PrintWriter
@@ -20,6 +21,17 @@ class KeypadActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN, android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
         pcIp = intent.getStringExtra("PC_IP") ?: "192.168.1.100"
         setContentView(R.layout.activity_keypad)
         
