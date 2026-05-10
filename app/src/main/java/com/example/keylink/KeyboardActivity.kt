@@ -38,7 +38,7 @@ class KeyboardActivity : AppCompatActivity() {
         setupTrackpoint()
         
         val container = findViewById<ViewGroup>(R.id.keyboardContainer)
-        setupAllKeys(container)
+        container?.let { setupAllKeys(it) }
 
         val btnLeftTrackpad = findViewById<ImageButton>(R.id.btnLeftTrackpad)
         val btnRightTrackpad = findViewById<ImageButton>(R.id.btnRightTrackpad)

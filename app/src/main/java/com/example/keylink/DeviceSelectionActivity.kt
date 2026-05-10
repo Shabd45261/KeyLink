@@ -26,7 +26,11 @@ class DeviceSelectionActivity : AppCompatActivity() {
             } else {
                 val selectedDevice = devices[position]
                 if (selectedDevice.contains("Online")) {
-                    startActivity(Intent(this, KeyboardActivity::class.java))
+                    val intent = Intent(this, KeyboardActivity::class.java)
+                    // For mock devices, we'd ideally have their IPs saved. 
+                    // For now, let's just trigger the dialog or use a placeholder.
+                    intent.putExtra("PC_IP", "192.168.1.100") 
+                    startActivity(intent)
                 }
             }
         }
