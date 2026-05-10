@@ -2,9 +2,11 @@ package com.example.keylink
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DeviceSelectionActivity : AppCompatActivity() {
 
@@ -12,27 +14,34 @@ class DeviceSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_device_selection)
 
-        val deviceListView = findViewById<ListView>(R.id.deviceListView)
-        
-        // In a real app, we'd scan the network. For now, let's add a way to input an IP.
-        val devices = mutableListOf("Add New Device", "Desktop-PC (Online)", "Laptop-Work (Offline)")
-        
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, devices)
-        deviceListView.adapter = adapter
+        val recyclerView = findViewById<RecyclerView>(R.id.deviceRecyclerView)
+        val tvTotalCount = findViewById<TextView>(R.id.tvTotalCount)
+        val fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
 
-        deviceListView.setOnItemClickListener { _, _, position, _ ->
-            if (position == 0) {
-                showConnectDialog()
-            } else {
-                val selectedDevice = devices[position]
-                if (selectedDevice.contains("Online")) {
-                    val intent = Intent(this, KeyboardActivity::class.java)
-                    // For mock devices, we'd ideally have their IPs saved. 
-                    // For now, let's just trigger the dialog or use a placeholder.
-                    intent.putExtra("PC_IP", "192.168.1.100") 
-                    startActivity(intent)
-                }
+        val devices = listOf(
+            Device("John's Workstation", "Seen 1m ago", "192.168.1.101", DeviceType.MONITOR, true),
+            Device("MacBook Pro M3", "Seen 12m ago", "192.168.1.102", DeviceType.LAPTOP, true),
+            Device("Office-Laptop-D2", "Last connected May 8, 2026", "192.168.1.103", DeviceType.LAPTOP, false),
+            Device("Gaming-Rig-Home", "Seen 30s ago", "192.168.1.104", DeviceType.MONITOR, true),
+            Device("Samsung Galaxy S24", "Last connected 2 days ago", "192.168.1.105", DeviceType.PHONE, false),
+            Device("Studio Monitor PC", "Last connected June 12, 2025", "192.168.1.106", DeviceType.MONITOR, false)
+        )
+
+        tvTotalCount.text = "${devices.size} Total"
+
+        val adapter = DeviceAdapter(devices) { device ->
+            if (device.isOnline) {
+                val intent = Intent(this, KeyboardActivity::class.java)
+                intent.putExtra("PC_IP", device.ip)
+                startActivity(intent)
             }
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        fabAdd.setOnClickListener {
+            showConnectDialog()
         }
     }
 
