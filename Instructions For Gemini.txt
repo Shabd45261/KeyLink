@@ -1,0 +1,34 @@
+App Idea:
+
+Name-KeyLink
+
+Purpose- Keyboard , Mouse trackpad for Windows in one app
+
+Sides- pc side application (helps pc connects to android) and android side application(main keyboard and trackpad app)
+
+Layout- 
+
+1. App opens up and then the user shows a menu of recent connected devices with green arrows and red arrows (green for online devices) (red for offline devices)
+2. The user clicks on one of the online device and then it connects to the pc side client . Note that the pc will be shown as online if the user has started the server on pc side
+3. On connecting to the pc a keyboard will be open in landscape fullscreen mode as per the image
+4. there are two keypad buttons at the left most bottom part and right bottom most part of the keyboard which will on clicking will open the fullscreen potrait keypad profile 
+
+
+Tasks And Operations
+
+Command- 
+
+1. Start - It means the operations you have to do whenever i start the session it means you have to read all the files and all txt files to understand teh progress and have to ensure that all files are updated on github or not if not then you have to update them
+
+2. Instructions - means you have to keep updating the Instruction.txt with all the commands,progress,directories etc and this file is local and will not be updated on github 
+
+3. Close - this instruction means you have to Update all the files on github and local files and txt files 
+
+
+
+now create all the files and txt files and create two different folders named pc client and android client to keep the progress neat 
+
+inside android client folder Create a Apk folder and everytime i command you (Close/Build) you have to build an apk of the android side and update it into that folder by the format (KeyLink-UPDATE NUMBER) for example Keylink-1 for first build,KeyLink-2 for second update and so on and after 5 updated apks on 6th updated apk delete the old 5 apks
+
+
+And one more thing my github repo link is https://github.com/Shabd45261/KeyLink.git 

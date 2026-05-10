@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- This will eventually be replaced by a full keyboard layout -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Keyboard Area (Landscape)"
+        android:textColor="#FFFFFF"
+        android:layout_centerInParent="true"/>
+
+    <ImageButton
+        android:id="@+id/btnLeftKeypad"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_grid"
+        android:contentDescription="Open Left Keypad" />
+
+    <ImageButton
+        android:id="@+id/btnRightKeypad"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_grid"
+        android:contentDescription="Open Right Keypad" />
+
+</RelativeLayout>
