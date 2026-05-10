@@ -17,9 +17,9 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_grid"
+        android:src="@android:drawable/ic_dialog_dialer"
         android:contentDescription="Open Left Keypad" />
 
     <ImageButton
@@ -27,9 +27,9 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_grid"
+        android:src="@android:drawable/ic_dialog_dialer"
         android:contentDescription="Open Right Keypad" />
 
 </RelativeLayout>
