@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
@@ -16,13 +17,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="2dp">
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="4dp"
+        android:weightSum="6.5">
 
         <!-- Row 0: Function Keys -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0.7"
             android:orientation="horizontal">
             <Button android:id="@+id/key_esc" android:text="Esc" style="@style/KeyStyle" android:layout_weight="1"/>
             <Button android:id="@+id/key_f1" android:text="F1" style="@style/KeyStyle" android:layout_weight="1"/>
@@ -46,7 +49,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:orientation="horizontal">
             <Button android:id="@+id/key_tilde" android:text="~" style="@style/KeyStyle" android:layout_weight="1"/>
             <Button android:id="@+id/key_1" android:text="1" style="@style/KeyStyle" android:layout_weight="1"/>
@@ -68,7 +71,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:orientation="horizontal">
             <Button android:id="@+id/key_tab" android:text="Tab" style="@style/KeyStyle" android:layout_weight="1.5"/>
             <Button android:id="@+id/key_q" android:text="Q" style="@style/KeyStyle" android:layout_weight="1"/>
@@ -90,7 +93,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:orientation="horizontal">
             <Button android:id="@+id/key_caps" android:text="Caps" style="@style/KeyStyle" android:layout_weight="1.8"/>
             <Button android:id="@+id/key_a" android:text="A" style="@style/KeyStyle" android:layout_weight="1"/>
@@ -111,7 +114,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1"
             android:orientation="horizontal">
             <Button android:id="@+id/key_shift_left" android:text="Shift" style="@style/KeyStyle" android:layout_weight="2.2"/>
             <Button android:id="@+id/key_z" android:text="Z" style="@style/KeyStyle" android:layout_weight="1"/>
@@ -131,21 +134,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.4"
+            android:layout_weight="1.2"
             android:orientation="horizontal">
-            <Button android:id="@+id/key_ctrl_left" android:text="Ctrl" style="@style/KeyStyle" android:layout_weight="1.5"/>
-            <Button android:id="@+id/key_fn" android:text="Fn" style="@style/KeyStyle" android:layout_weight="1.2"/>
-            <Button android:id="@+id/key_win" android:text="Win" style="@style/KeyStyle" android:layout_weight="1.2"/>
-            <Button android:id="@+id/key_alt_left" android:text="Alt" style="@style/KeyStyle" android:layout_weight="1.2"/>
-            <Button android:id="@+id/key_space" android:text=" " style="@style/KeyStyle" android:layout_weight="6.0"/>
-            <Button android:id="@+id/key_alt_right" android:text="Alt" style="@style/KeyStyle" android:layout_weight="1.2"/>
-            <Button android:id="@+id/key_ctrl_right" android:text="Ctrl" style="@style/KeyStyle" android:layout_weight="1.2"/>
-            <Button android:id="@+id/key_menu" android:text="Menu" style="@style/KeyStyle" android:layout_weight="1.2"/>
+
+            <ImageButton
+                android:id="@+id/btnLeftTrackpad"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@drawable/circle_button_bg"
+                android:src="@drawable/mouse_icon"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:layout_margin="2dp"
+                android:contentDescription="Open Trackpad Profile"/>
+
+            <Button android:id="@+id/key_fn" android:text="Fn" style="@style/KeyStyle" android:layout_weight="1"/>
+            <Button android:id="@+id/key_win" android:text="Win" style="@style/KeyStyle" android:layout_weight="1"/>
+            <Button android:id="@+id/key_alt_left" android:text="Alt" style="@style/KeyStyle" android:layout_weight="1"/>
+
+            <Button android:id="@+id/key_space" android:text=" " style="@style/KeyStyle" android:layout_weight="5.5"/>
+
+            <Button android:id="@+id/key_alt_right" android:text="Alt" style="@style/KeyStyle" android:layout_weight="1"/>
+            <Button android:id="@+id/key_ctrl_right" android:text="Ctrl" style="@style/KeyStyle" android:layout_weight="1"/>
+            <Button android:id="@+id/key_menu" android:text="Menu" style="@style/KeyStyle" android:layout_weight="1"/>
 
             <GridLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3.0"
+                android:layout_weight="2.5"
                 android:columnCount="3"
                 android:rowCount="2">
                 <Button android:id="@+id/key_pgup" android:text="PgUp" style="@style/NavKeyStyle" android:layout_columnWeight="1" android:layout_rowWeight="1"/>
@@ -155,44 +172,29 @@
                 <Button android:id="@+id/key_down" android:text="↓" style="@style/NavKeyStyle" android:layout_columnWeight="1" android:layout_rowWeight="1"/>
                 <Button android:id="@+id/key_right" android:text="→" style="@style/NavKeyStyle" android:layout_columnWeight="1" android:layout_rowWeight="1"/>
             </GridLayout>
+
+            <ImageButton
+                android:id="@+id/btnRightTrackpad"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:background="@drawable/circle_button_bg"
+                android:src="@drawable/mouse_icon"
+                android:scaleType="centerInside"
+                android:padding="8dp"
+                android:layout_margin="2dp"
+                android:contentDescription="Open Trackpad Profile"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Trackpoint overlaid - positioned near G,H,B -->
-    <!-- On a weighted layout, it's harder to pin. Let's use absolute positioning relative to container for now or approximate. -->
+    <!-- Trackpoint overlaid - adjusted position -->
     <View
         android:id="@+id/trackpoint"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:background="@drawable/trackpoint_bg"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="-20dp" />
-
-    <!-- Large Profile Buttons at Bottom corners as per the image -->
-    <ImageButton
-        android:id="@+id/btnLeftTrackpad"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_button_bg"
-        android:src="@drawable/mouse_icon"
-        android:scaleType="centerInside"
-        android:padding="15dp"
-        android:elevation="10dp"/>
-
-    <ImageButton
-        android:id="@+id/btnRightTrackpad"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_button_bg"
-        android:src="@drawable/mouse_icon"
-        android:scaleType="centerInside"
-        android:padding="15dp"
-        android:elevation="10dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="220dp"
+        android:elevation="5dp" />
 
 </RelativeLayout>

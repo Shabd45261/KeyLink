@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class DeviceAdapter(
     private val devices: List<Device>,
-    private val onClick: (Device) -> Unit
+    private val onClick: (Device) -> Unit,
+    private val onLongClick: (Device) -> Unit
 ) : RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
 
     class DeviceViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -30,14 +31,12 @@ class DeviceAdapter(
         holder.tvName.text = device.name
         holder.tvStatus.text = device.status
         
-        // Set Icon based on type
         when (device.type) {
             DeviceType.MONITOR -> holder.ivIcon.setImageResource(R.drawable.ic_monitor)
             DeviceType.LAPTOP -> holder.ivIcon.setImageResource(R.drawable.ic_laptop)
             DeviceType.PHONE -> holder.ivIcon.setImageResource(R.drawable.ic_phone)
         }
 
-        // Online/Offline styling
         if (device.isOnline) {
             holder.tvName.setTextColor(Color.WHITE)
             holder.ivIcon.alpha = 1.0f
@@ -46,11 +45,15 @@ class DeviceAdapter(
         } else {
             holder.tvName.setTextColor(Color.parseColor("#444444"))
             holder.ivIcon.alpha = 0.3f
-            holder.ivArrow.setColorFilter(Color.parseColor("#FF5252")) // Reddish arrow for offline as in image
+            holder.ivArrow.setColorFilter(Color.parseColor("#FF5252"))
             holder.ivArrow.alpha = 0.5f
         }
 
         holder.itemView.setOnClickListener { onClick(device) }
+        holder.itemView.setOnLongClickListener {
+            onLongClick(device)
+            true
+        }
     }
 
     override fun getItemCount() = devices.size

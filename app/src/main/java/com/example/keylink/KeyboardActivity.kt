@@ -26,12 +26,10 @@ class KeyboardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        pcIp = intent.getStringExtra("PC_IP") ?: "192.168.1.100"
-        
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         
-        // Hide navigation bar and status bar for true fullscreen
+        // Fullscreen immersive sticky
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -41,12 +39,14 @@ class KeyboardActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_keyboard)
 
+        pcIp = intent.getStringExtra("PC_IP") ?: "192.168.1.100"
+        
         connectToPc()
         setupTrackpad()
         setupTrackpoint()
         
         val container = findViewById<ViewGroup>(R.id.keyboardContainer)
-        container?.let { setupAllKeys(it) }
+        setupAllKeys(container)
 
         val btnLeftTrackpad = findViewById<ImageButton>(R.id.btnLeftTrackpad)
         val btnRightTrackpad = findViewById<ImageButton>(R.id.btnRightTrackpad)
@@ -65,18 +65,14 @@ class KeyboardActivity : AppCompatActivity() {
         if (view is Button) {
             view.setOnClickListener {
                 var key = view.text.toString().lowercase()
-                // Map some special characters/names for the PC server
                 key = when (key) {
                     "↑" -> "up"
                     "↓" -> "down"
                     "←" -> "left"
                     "→" -> "right"
-                    "pgup" -> "pageup"
-                    "pgdn" -> "pagedown"
-                    "ins" -> "insert"
-                    "del" -> "delete"
-                    "prtsc" -> "printscreen"
-                    "bksp" -> "backspace"
+                    "pgup" -> "pgup"
+                    "pgdn" -> "pgdn"
+                    "bksp" -> "bksp"
                     else -> key
                 }
                 sendCommand("KEY:$key")
@@ -118,11 +114,10 @@ class KeyboardActivity : AppCompatActivity() {
         trackpoint.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_MOVE -> {
-                    // Trackpoint relative movement
                     val centerX = v.width / 2f
                     val centerY = v.height / 2f
-                    val dx = ((event.x - centerX) / 5).toInt()
-                    val dy = ((event.y - centerY) / 5).toInt()
+                    val dx = ((event.x - centerX) / 4).toInt()
+                    val dy = ((event.y - centerY) / 4).toInt()
                     if (dx != 0 || dy != 0) {
                         sendCommand("MOUSE:$dx,$dy")
                     }
@@ -142,7 +137,7 @@ class KeyboardActivity : AppCompatActivity() {
             try {
                 socket = Socket(pcIp, 9999)
                 out = PrintWriter(socket!!.getOutputStream(), true)
-                sendCommand("CONNECTED:Android Keyboard")
+                sendCommand("CONNECTED:Android")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -153,6 +148,7 @@ class KeyboardActivity : AppCompatActivity() {
         thread {
             try {
                 out?.println(command)
+                out?.flush()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
