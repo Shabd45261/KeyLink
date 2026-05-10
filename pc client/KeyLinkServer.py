@@ -4,8 +4,9 @@ import tkinter as tk
 from tkinter import messagebox
 import pyautogui
 
-# Disable fail-safe to prevent app from stopping if mouse hits corners
+# Disable fail-safe and reduce pause
 pyautogui.FAILSAFE = False
+pyautogui.PAUSE = 0
 
 class KeyLinkServer:
     def __init__(self, root):

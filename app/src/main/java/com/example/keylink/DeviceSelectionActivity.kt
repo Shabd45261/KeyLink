@@ -28,8 +28,8 @@ class DeviceSelectionActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.deviceRecyclerView)
         tvTotalCount = findViewById(R.id.tvTotalCount)
-        val fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
-        val ivSettings = findViewById<ImageView>(R.id.ivSettings)
+        val fabAdd: FloatingActionButton = findViewById(R.id.fabAdd)
+        val ivSettings: ImageView = findViewById(R.id.ivSettings)
 
         loadDevices()
 
