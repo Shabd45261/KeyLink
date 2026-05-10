@@ -18,6 +18,7 @@
             android:layout_marginBottom="32dp">
 
             <LinearLayout
+                android:id="@+id/llLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -26,7 +27,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_logo"
-                    android:contentDescription="Logo"/>
+                    android:contentDescription="KeyLink Logo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,6 +46,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/tvServerLive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="SERVER LIVE"
@@ -57,12 +59,12 @@
                     android:layout_marginEnd="12dp"/>
 
                 <ImageView
-                    android:id="@+id/ivSettings"
+                    android:id="@+id/ivSettingsIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_settings"
                     app:tint="#FFFFFF"
-                    android:contentDescription="Settings"
+                    android:contentDescription="Settings Menu"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?android:attr/selectableItemBackgroundBorderless"/>
@@ -75,6 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp">
             <TextView
+                android:id="@+id/tvHeaderTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Recent connections"
@@ -87,12 +90,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:text="6 Total"
+                android:text="0 Total"
                 android:textColor="#448AFF"
                 android:textSize="12sp"/>
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/tvHeaderSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tap an online device to start controlling."
@@ -109,6 +113,7 @@
 
         <!-- Bottom Help Button -->
         <LinearLayout
+            android:id="@+id/llHelpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -120,7 +125,7 @@
                 android:layout_height="16dp"
                 android:src="@drawable/ic_help"
                 app:tint="#FFFFFF"
-                android:contentDescription="Help Icon"/>
+                android:contentDescription="Help"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,6 +148,6 @@
         app:backgroundTint="#448AFF"
         app:tint="#FFFFFF"
         app:fabSize="normal"
-        android:contentDescription="Add connection"/>
+        android:contentDescription="Add new connection"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

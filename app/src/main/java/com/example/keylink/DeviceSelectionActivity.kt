@@ -29,15 +29,19 @@ class DeviceSelectionActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.deviceRecyclerView)
         tvTotalCount = findViewById(R.id.tvTotalCount)
         val fabAdd: FloatingActionButton = findViewById(R.id.fabAdd)
-        val ivSettings: ImageView = findViewById(R.id.ivSettings)
+        val ivSettingsIcon: ImageView = findViewById(R.id.ivSettingsIcon)
 
         loadDevices()
 
         adapter = DeviceAdapter(deviceList, 
             onClick = { device ->
-                val intent = Intent(this, KeyboardActivity::class.java)
-                intent.putExtra("PC_IP", device.ip)
-                startActivity(intent)
+                if (device.isOnline) {
+                    val intent = Intent(this, KeyboardActivity::class.java)
+                    intent.putExtra("PC_IP", device.ip)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "${device.name} is offline", Toast.LENGTH_SHORT).show()
+                }
             },
             onLongClick = { device ->
                 showDeleteDialog(device)
@@ -49,7 +53,7 @@ class DeviceSelectionActivity : AppCompatActivity() {
 
         fabAdd.setOnClickListener { showConnectDialog() }
         
-        ivSettings.setOnClickListener {
+        ivSettingsIcon.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Settings")
                 .setItems(arrayOf("Clear All Connections", "About KeyLink")) { _, which ->
@@ -87,9 +91,13 @@ class DeviceSelectionActivity : AppCompatActivity() {
         input.hint = "Enter PC IP Address (e.g. 192.168.1.5)"
         builder.setView(input)
         builder.setPositiveButton("Connect") { _, _ ->
-            val ip = input.text.toString()
+            val ip = input.text.toString().trim()
             if (ip.isNotEmpty()) {
                 val newDevice = Device("PC @ $ip", "Manual Connection", ip, DeviceType.MONITOR, true)
+                // Add if not exists or replace
+                val existing = deviceList.find { it.ip == ip }
+                if (existing != null) deviceList.remove(existing)
+                
                 deviceList.add(0, newDevice)
                 saveDevices()
                 updateUI()
@@ -127,22 +135,27 @@ class DeviceSelectionActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE)
         val devicesJson = sharedPref.getString("devices", null)
         deviceList.clear()
-        if (devicesJson != null) {
-            val jsonArray = JSONArray(devicesJson)
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                deviceList.add(Device(
-                    obj.getString("name"),
-                    obj.getString("status"),
-                    obj.getString("ip"),
-                    DeviceType.valueOf(obj.getString("type")),
-                    obj.getBoolean("isOnline")
-                ))
+        if (devicesJson != null && devicesJson.isNotEmpty()) {
+            try {
+                val jsonArray = JSONArray(devicesJson)
+                for (i in 0 until jsonArray.length()) {
+                    val obj = jsonArray.getJSONObject(i)
+                    deviceList.add(Device(
+                        obj.getString("name"),
+                        obj.getString("status"),
+                        obj.getString("ip"),
+                        DeviceType.valueOf(obj.getString("type")),
+                        obj.getBoolean("isOnline")
+                    ))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         } else {
-            // Default mock data
+            // Default mock data only on first run
             deviceList.add(Device("Workstation", "Seen 1m ago", "192.168.1.101", DeviceType.MONITOR, true))
             deviceList.add(Device("MacBook Pro", "Seen 12m ago", "192.168.1.102", DeviceType.LAPTOP, true))
+            saveDevices()
         }
         updateUI()
     }
