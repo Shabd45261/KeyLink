@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -30,8 +31,7 @@ class DeviceSelectionActivity : AppCompatActivity() {
         tvTotalCount = findViewById(R.id.tvTotalCount)
         val fabAdd: FloatingActionButton = findViewById(R.id.fabAdd)
         val ivSettingsIcon: ImageView = findViewById(R.id.ivSettingsIcon)
-
-        loadDevices()
+        val llShortcutsButton: LinearLayout = findViewById(R.id.llShortcutsButton)
 
         adapter = DeviceAdapter(deviceList, 
             onClick = { device ->
@@ -51,17 +51,22 @@ class DeviceSelectionActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
+        loadDevices()
+
         fabAdd.setOnClickListener { showConnectDialog() }
         
         ivSettingsIcon.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Settings")
-                .setItems(arrayOf("Clear All Connections", "About KeyLink")) { _, which ->
-                    when (which) {
-                        0 -> clearAllDevices()
-                        1 -> Toast.makeText(this, "KeyLink v1.0", Toast.LENGTH_SHORT).show()
-                    }
-                }.show()
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        llShortcutsButton.setOnClickListener {
+            val intent = Intent(this, ShortcutsActivity::class.java)
+            // If we have an online device, pass its IP
+            val onlineDevice = deviceList.find { it.isOnline }
+            if (onlineDevice != null) {
+                intent.putExtra("PC_IP", onlineDevice.ip)
+            }
+            startActivity(intent)
         }
     }
 
@@ -112,7 +117,9 @@ class DeviceSelectionActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        adapter.notifyDataSetChanged()
+        if (::adapter.isInitialized) {
+            adapter.notifyDataSetChanged()
+        }
         tvTotalCount.text = "${deviceList.size} Total"
     }
 

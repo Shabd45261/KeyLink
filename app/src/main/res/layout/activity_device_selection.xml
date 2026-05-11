@@ -26,7 +26,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_logo"
+                    app:srcCompat="@drawable/ic_logo"
                     android:contentDescription="KeyLink Logo"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -54,15 +54,17 @@
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:background="@drawable/badge_bg"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:layout_marginEnd="12dp"/>
 
                 <ImageView
                     android:id="@+id/ivSettingsIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_settings"
+                    app:srcCompat="@drawable/ic_settings"
                     app:tint="#FFFFFF"
                     android:contentDescription="Settings Menu"
                     android:clickable="true"
@@ -111,28 +113,62 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <!-- Bottom Help Button -->
+        <!-- Bottom Buttons -->
         <LinearLayout
-            android:id="@+id/llHelpButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="8dp"
-            android:background="@drawable/help_button_bg">
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_help"
-                app:tint="#FFFFFF"
-                android:contentDescription="Help"/>
-            <TextView
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/llShortcutsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Help"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginStart="8dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:background="@drawable/help_button_bg"
+                android:layout_marginEnd="8dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    app:srcCompat="@drawable/ic_settings"
+                    app:tint="#FFFFFF"
+                    android:contentDescription="Shortcuts"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shortcuts"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llHelpButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="8dp"
+                android:background="@drawable/help_button_bg"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    app:srcCompat="@drawable/ic_help"
+                    app:tint="#FFFFFF"
+                    android:contentDescription="Help"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Help"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

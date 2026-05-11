@@ -42,7 +42,8 @@
         android:layout_height="wrap_content"
         android:columnCount="3"
         android:padding="8dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:splitMotionEvents="true">
 
         <Button android:id="@+id/num_1" android:text="1" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
         <Button android:id="@+id/num_2" android:text="2" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>

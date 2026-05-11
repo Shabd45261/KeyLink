@@ -105,8 +105,9 @@ class KeyLinkServer:
                 # Split multiple commands if they arrive together
                 commands = data.split('\n')
                 for cmd in commands:
-                    if cmd:
-                        self.process_command(cmd)
+                    clean_cmd = cmd.strip()
+                    if clean_cmd:
+                        self.process_command(clean_cmd)
 
             except Exception as e:
                 self.log(f"Connection lost: {e}")
@@ -115,48 +116,74 @@ class KeyLinkServer:
 
     def process_command(self, command):
         try:
-            if command.startswith("KEY:"):
-                key = command.split(":")[1].lower()
-                # Special mapping for pyautogui
+            self.log(f"CMD: {command}") # Added logging for every command
+            if command.startswith("CONNECTED:"):
+                self.log(f"Client info: {command.split(':')[1]}")
+                return
+
+            if command.startswith("DOWN:") or command.startswith("UP:"):
+                parts = command.split(":")
+                action = parts[0]
+                key = parts[1].lower()
+
                 special_keys = {
-                    "bksp": "backspace",
-                    "esc": "esc",
-                    "tab": "tab",
-                    "caps": "capslock",
-                    "enter": "enter",
-                    "shift": "shift",
-                    "ctrl": "ctrl",
-                    "alt": "alt",
-                    "win": "win",
-                    "up": "up",
-                    "down": "down",
-                    "left": "left",
-                    "right": "right",
-                    "prtscr": "printscreen",
-                    "ins": "insert",
-                    "del": "delete",
-                    "pgup": "pageup",
-                    "pgdn": "pagedown",
-                    " ": "space"
+                    "bksp": "backspace", "backspace": "backspace",
+                    "esc": "esc", "tab": "tab", "caps": "capslock", "capslock": "capslock",
+                    "enter": "enter", "shift": "shift", "ctrl": "ctrl", "alt": "alt",
+                    "win": "win", "up": "up", "down": "down", "left": "left", "right": "right",
+                    "prtsc": "printscreen", "printscreen": "printscreen",
+                    "ins": "insert", "insert": "insert", "del": "delete", "delete": "delete",
+                    "pgup": "pageup", "pageup": "pageup", "pgdn": "pagedown", "pagedown": "pagedown",
+                    "space": "space", " ": "space"
                 }
 
+                target_key = special_keys.get(key, key)
+
+                if action == "DOWN":
+                    pyautogui.keyDown(target_key)
+                else:
+                    pyautogui.keyUp(target_key)
+
+            elif command.startswith("KEY:"):
+                key = command.split(":")[1].lower()
+                special_keys = {
+                    "bksp": "backspace", "esc": "esc", "tab": "tab", "caps": "capslock",
+                    "enter": "enter", "shift": "shift", "ctrl": "ctrl", "alt": "alt",
+                    "win": "win", "up": "up", "down": "down", "left": "left", "right": "right",
+                    "prtscr": "printscreen", "ins": "insert", "del": "delete",
+                    "pgup": "pageup", "pgdn": "pagedown", " ": "space"
+                }
                 if key in special_keys:
                     pyautogui.press(special_keys[key])
                 elif len(key) == 1:
                     pyautogui.write(key)
                 else:
-                    # Fallback for F1-F12
                     pyautogui.press(key)
 
             elif command.startswith("MOUSE:"):
                 coords = command.split(":")[1].split(",")
                 dx, dy = int(coords[0]), int(coords[1])
-                # Smooth the movement slightly
                 pyautogui.moveRel(dx * 1.5, dy * 1.5, duration=0)
 
             elif command.startswith("CLICK:"):
                 button = command.split(":")[1]
                 pyautogui.click(button=button)
+
+            elif command.startswith("HOTKEY:"):
+                keys = command.split(":")[1].split(",")
+                mapped_keys = []
+                special_keys = {
+                    "win": "win", "ctrl": "ctrl", "alt": "alt", "shift": "shift",
+                    "esc": "esc", "tab": "tab", "enter": "enter", "backspace": "backspace",
+                    "up": "up", "down": "down", "left": "left", "right": "right",
+                    "pgup": "pageup", "pgdn": "pagedown", "prtsc": "printscreen",
+                    "ins": "insert", "del": "delete", "f1": "f1", "f2": "f2", "f3": "f3",
+                    "f4": "f4", "f5": "f5", "f6": "f6", "f7": "f7", "f8": "f8", "f9": "f9",
+                    "f10": "f10", "f11": "f11", "f12": "f12", "space": "space"
+                }
+                for k in keys:
+                    mapped_keys.append(special_keys.get(k.lower(), k.lower()))
+                pyautogui.hotkey(*mapped_keys)
         except Exception as e:
             print(f"Command error: {e}")
 

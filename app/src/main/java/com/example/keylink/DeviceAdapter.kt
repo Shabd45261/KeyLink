@@ -1,6 +1,7 @@
 package com.example.keylink
 
 import android.graphics.Color
+import androidx.appcompat.content.res.AppCompatResources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,11 +32,13 @@ class DeviceAdapter(
         holder.tvName.text = device.name
         holder.tvStatus.text = device.status
         
-        when (device.type) {
-            DeviceType.MONITOR -> holder.ivIcon.setImageResource(R.drawable.ic_monitor)
-            DeviceType.LAPTOP -> holder.ivIcon.setImageResource(R.drawable.ic_laptop)
-            DeviceType.PHONE -> holder.ivIcon.setImageResource(R.drawable.ic_phone)
+        val context = holder.itemView.context
+        val iconRes = when (device.type) {
+            DeviceType.MONITOR -> R.drawable.ic_monitor
+            DeviceType.LAPTOP -> R.drawable.ic_laptop
+            DeviceType.PHONE -> R.drawable.ic_phone
         }
+        holder.ivIcon.setImageDrawable(AppCompatResources.getDrawable(context, iconRes))
 
         if (device.isOnline) {
             holder.tvName.setTextColor(Color.WHITE)

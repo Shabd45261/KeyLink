@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tvShortcutName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Action Name"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tvShortcutKeys"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Win + A"
+        android:textColor="#448AFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:background="#1A448AFF"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"/>
+
+</LinearLayout>

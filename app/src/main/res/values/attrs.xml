@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="KeyboardLayout_Layout">
+        <attr name="layout_rowIndex" format="integer" />
+        <attr name="layout_widthMultiplier" format="float" />
+    </declare-styleable>
+</resources>
