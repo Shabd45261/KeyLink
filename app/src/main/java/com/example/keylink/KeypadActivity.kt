@@ -113,7 +113,8 @@ class KeypadActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 runOnUiThread {
-                    Toast.makeText(this, "Failed to connect to $pcIp", Toast.LENGTH_LONG).show()
+                    val errorMsg = e.localizedMessage ?: "Unknown Error"
+                    Toast.makeText(this, "Failed to connect to $pcIp: $errorMsg", Toast.LENGTH_LONG).show()
                 }
             }
         }

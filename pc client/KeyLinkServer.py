@@ -29,8 +29,10 @@ class KeyLinkServer:
         self.status_label = tk.Label(root, text="Status: Stopped", fg="#FF5252", bg="#121212", font=label_font)
         self.status_label.pack(pady=5)
 
-        self.ip_label = tk.Label(root, text=f"Local IP: {self.get_ip()}", fg="#FFFFFF", bg="#121212", font=label_font)
+        self.ip_label = tk.Label(root, text=f"Local IP: {self.get_ip()}\n(Use this IP in Android App)", fg="#FFFFFF", bg="#121212", font=label_font)
         self.ip_label.pack(pady=5)
+
+        tk.Label(root, text="Make sure PC and Android are on same WiFi\nand Firewall allows port 9999", fg="#888888", bg="#121212", font=("Helvetica", 8)).pack(pady=5)
 
         self.start_button = tk.Button(root, text="START SERVER", command=self.start_server,
                                      bg="#448AFF", fg="white", font=("Helvetica", 10, "bold"),

@@ -121,6 +121,7 @@ class DeviceSelectionActivity : AppCompatActivity() {
     private fun showConnectDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Connect to PC")
+        builder.setMessage("Ensure KeyLinkServer.py is running on your PC and both devices are on the same WiFi.")
         val input = EditText(this)
         input.hint = "Enter PC IP Address (e.g. 192.168.1.5)"
         builder.setView(input)
