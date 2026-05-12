@@ -27,10 +27,9 @@ class KeyColorMenuActivity : AppCompatActivity() {
                 .remove("kb_key_color")
                 .remove("kb_key_alpha")
                 .remove("kb_vibrate_all")
-                // Specific keys reset would be harder if stored as JSON, but let's assume we clear all customization
-                .remove("specific_key_configs")
+                .remove("specific_key_settings")
                 .apply()
-            Toast.makeText(this, "Reset to defaults", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Key colors and sounds reset to default", Toast.LENGTH_SHORT).show()
         }
     }
 

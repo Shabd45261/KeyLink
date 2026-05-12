@@ -65,6 +65,34 @@ class SettingsActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnMouseButtonSettings).setOnClickListener {
             showMouseButtonSettings()
         }
+
+        findViewById<Button>(R.id.btnResetTrackpad).setOnClickListener {
+            sharedPref.edit()
+                .remove("trackpad_bg_uri")
+                .remove("mouse_btn_color")
+                .remove("mouse_btn_alpha")
+                .apply()
+            Toast.makeText(this, "Trackpad settings reset", Toast.LENGTH_SHORT).show()
+            recreate()
+        }
+
+        findViewById<Button>(R.id.btnResetAll).setOnClickListener {
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Reset All Settings")
+                .setMessage("Are you sure you want to reset all settings to default? This cannot be undone.")
+                .setPositiveButton("Reset") { _, _ ->
+                    sharedPref.edit().clear().apply()
+                    Toast.makeText(this, "All settings reset", Toast.LENGTH_SHORT).show()
+                    recreate()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+        findViewById<Button>(R.id.btnClearConnections).setOnClickListener {
+            sharedPref.edit().remove("devices").apply()
+            Toast.makeText(this, "Connections cleared", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun updateSoundUI(uriString: String?) {

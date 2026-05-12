@@ -48,6 +48,15 @@
                 android:textAlignment="viewStart"
                 android:textColor="#FFFFFF"/>
 
+            <Button
+                android:id="@+id/btnResetLayout"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reset Layout (Size &amp; Position)"
+                android:textAlignment="viewStart"
+                android:textColor="#FF5252"/>
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

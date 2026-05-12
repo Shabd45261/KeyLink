@@ -72,8 +72,8 @@
 
         <ImageButton
             android:id="@+id/btnFlipOrientation"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:background="@drawable/circle_button_bg"
             app:srcCompat="@drawable/ic_help"
             android:padding="12dp"
@@ -82,24 +82,24 @@
 
         <ImageButton
             android:id="@+id/btnSwitchKeyboard"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="12dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/ic_keyboard_profile"
-            android:scaleType="fitCenter"
+            android:scaleType="centerInside"
             android:contentDescription="Switch to Keyboard"/>
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/btnSwitchGamepad"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="top|end"
         android:layout_margin="12dp"
         android:background="@android:color/transparent"
         app:srcCompat="@drawable/ic_gamepad_profile"
-        android:scaleType="fitCenter"
+        android:scaleType="centerInside"
         android:contentDescription="Switch to Gamepad"/>
 
 </FrameLayout>

@@ -154,6 +154,59 @@
                     android:textAlignment="viewStart"
                     android:textColor="#FFFFFF" />
 
+                <Button
+                    android:id="@+id/btnResetTrackpad"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reset Trackpad Settings"
+                    android:textAlignment="viewStart"
+                    android:textColor="#FF5252" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Danger Zone Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#1A1A1A"
+            app:cardCornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#FF5252">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="Danger Zone"
+                    android:textColor="#FF5252"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnResetAll"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reset All Settings to Default"
+                    android:textColor="#FF5252"
+                    app:strokeColor="#FF5252" />
+
+                <Button
+                    android:id="@+id/btnClearConnections"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clear Recent Connections List"
+                    android:textColor="#FF5252" />
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
