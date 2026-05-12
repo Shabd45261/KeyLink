@@ -29,6 +29,8 @@ class KeypadActivity : AppCompatActivity() {
     
     private var lastX = 0f
     private var lastY = 0f
+    private var accumulatedDx = 0f
+    private var accumulatedDy = 0f
     private var isDragging = false
     
     // Multi-finger tracking
@@ -137,10 +139,22 @@ class KeypadActivity : AppCompatActivity() {
         val btnColor = sharedPref.getInt("mouse_btn_color", Color.parseColor("#BB86FC"))
         val btnAlpha = sharedPref.getFloat("mouse_btn_alpha", 1.0f)
         
-        lBtn.setBackgroundColor(btnColor)
-        lBtn.alpha = btnAlpha
-        rBtn.setBackgroundColor(btnColor)
-        rBtn.alpha = btnAlpha
+        // Apply alpha only to the background color to keep text visible
+        val alphaInt = (btnAlpha * 255).toInt()
+        val colorWithAlpha = Color.argb(alphaInt, Color.red(btnColor), Color.green(btnColor), Color.blue(btnColor))
+        
+        lBtn.setBackgroundColor(colorWithAlpha)
+        rBtn.setBackgroundColor(colorWithAlpha)
+        
+        // Ensure stroke/boundary is visible (if it's a MaterialButton)
+        if (lBtn is com.google.android.material.button.MaterialButton) {
+            lBtn.setStrokeColor(android.content.res.ColorStateList.valueOf(Color.BLACK))
+            lBtn.setStrokeWidth(2)
+        }
+        if (rBtn is com.google.android.material.button.MaterialButton) {
+            rBtn.setStrokeColor(android.content.res.ColorStateList.valueOf(Color.BLACK))
+            rBtn.setStrokeWidth(2)
+        }
         
         scaleDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -177,14 +191,20 @@ class KeypadActivity : AppCompatActivity() {
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (pointerCount == 1) {
-                        val dx = (event.x - lastX).toInt()
-                        val dy = (event.y - lastY).toInt()
-                        if (dx != 0 || dy != 0) {
+                        accumulatedDx += (event.x - lastX)
+                        accumulatedDy += (event.y - lastY)
+                        
+                        val sendX = accumulatedDx.toInt()
+                        val sendY = accumulatedDy.toInt()
+                        
+                        if (sendX != 0 || sendY != 0) {
                             if (isDragging) {
-                                sendCommand("DRAG:$dx,$dy")
+                                sendCommand("DRAG:$sendX,$sendY")
                             } else {
-                                sendCommand("MOUSE:$dx,$dy")
+                                sendCommand("MOUSE:$sendX,$sendY")
                             }
+                            accumulatedDx -= sendX
+                            accumulatedDy -= sendY
                         }
                     } else if (pointerCount == 2 && !scaleDetector.isInProgress) {
                         val dx = (event.getX(0) - lastX).toInt()

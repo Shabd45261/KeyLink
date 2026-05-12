@@ -3,6 +3,29 @@ import threading
 import tkinter as tk
 from tkinter import messagebox
 import pyautogui
+import ctypes
+
+# Windows Mouse Event Constants
+MOUSEEVENTF_MOVE = 0x0001
+MOUSEEVENTF_LEFTDOWN = 0x0002
+MOUSEEVENTF_LEFTUP = 0x0004
+MOUSEEVENTF_RIGHTDOWN = 0x0008
+MOUSEEVENTF_RIGHTUP = 0x0010
+MOUSEEVENTF_MIDDLEDOWN = 0x0020
+MOUSEEVENTF_MIDDLEUP = 0x0040
+
+def win_move_mouse(dx, dy):
+    ctypes.windll.user32.mouse_event(MOUSEEVENTF_MOVE, int(dx), int(dy), 0, 0)
+
+def win_click_mouse(button, action):
+    if button == "left":
+        flag = MOUSEEVENTF_LEFTDOWN if action == "down" else MOUSEEVENTF_LEFTUP
+    elif button == "right":
+        flag = MOUSEEVENTF_RIGHTDOWN if action == "down" else MOUSEEVENTF_RIGHTUP
+    elif button == "middle":
+        flag = MOUSEEVENTF_MIDDLEDOWN if action == "down" else MOUSEEVENTF_MIDDLEUP
+    else: return
+    ctypes.windll.user32.mouse_event(flag, 0, 0, 0, 0)
 
 # Disable fail-safe and reduce pause
 pyautogui.FAILSAFE = False
@@ -135,7 +158,8 @@ class KeyLinkServer:
 
             elif command.startswith("MOUSE:"):
                 coords = command.split(":")[1].split(",")
-                pyautogui.moveRel(int(coords[0]) * 1.5, int(coords[1]) * 1.5, duration=0)
+                # Using win_move_mouse for instant reaction
+                win_move_mouse(int(coords[0]) * 2, int(coords[1]) * 2)
 
             elif command.startswith("SCROLL:"):
                 coords = command.split(":")[1].split(",")
@@ -149,17 +173,18 @@ class KeyLinkServer:
 
             elif command.startswith("DRAG:"):
                 coords = command.split(":")[1].split(",")
-                pyautogui.dragRel(int(coords[0]), int(coords[1]), duration=0)
+                win_move_mouse(int(coords[0]) * 2, int(coords[1]) * 2)
 
             elif command.startswith("DRAG_START"):
-                pyautogui.mouseDown()
+                win_click_mouse("left", "down")
 
             elif command.startswith("DRAG_RELEASE"):
-                pyautogui.mouseUp()
+                win_click_mouse("left", "up")
 
             elif command.startswith("CLICK:"):
                 btn = command.split(":")[1]
-                pyautogui.click(button=btn)
+                win_click_mouse(btn, "down")
+                win_click_mouse(btn, "up")
 
             elif command.startswith("GESTURE:"):
                 gesture = command.split(":")[1]

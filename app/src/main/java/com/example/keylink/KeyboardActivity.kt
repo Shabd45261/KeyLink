@@ -33,6 +33,8 @@ class KeyboardActivity : AppCompatActivity() {
     
     private var lastX = 0f
     private var lastY = 0f
+    private var accumulatedDx = 0f
+    private var accumulatedDy = 0f
     
     private var isCapsLock = false
     private lateinit var vibrator: Vibrator
@@ -96,10 +98,20 @@ class KeyboardActivity : AppCompatActivity() {
         setupTrackpoint()
         
         val container = findViewById<KeyboardLayout>(R.id.keyboardContainer)
-        container.widthScale = sharedPref.getFloat("kb_width_scale", 1.0f)
-        container.heightScale = sharedPref.getFloat("kb_height_scale", 1.0f)
-        container.xOffset = sharedPref.getFloat("kb_x_offset", 0f)
-        container.yOffset = sharedPref.getFloat("kb_y_offset", 0f)
+        
+        val autoResizeEnabled = sharedPref.getBoolean("kb_auto_resize", false)
+        if (autoResizeEnabled) {
+            // Auto-resize: Scale to fill more screen but keep centered
+            container.widthScale = 1.05f 
+            container.heightScale = 1.1f
+            container.xOffset = 0f
+            container.yOffset = 0f
+        } else {
+            container.widthScale = sharedPref.getFloat("kb_width_scale", 1.0f)
+            container.heightScale = sharedPref.getFloat("kb_height_scale", 1.0f)
+            container.xOffset = sharedPref.getFloat("kb_x_offset", 0f)
+            container.yOffset = sharedPref.getFloat("kb_y_offset", 0f)
+        }
 
         loadKeySettings()
         setupAllKeys(container)
@@ -424,14 +436,14 @@ class KeyboardActivity : AppCompatActivity() {
     }
 
     private fun sendKeyCommand(action: String, keyText: String) {
-        var key = keyText.lowercase()
+        var key = keyText.trim().lowercase()
         
-        // Fix Mappings
+        // Fix Mappings using Unicode for arrow symbols
         key = when (key) {
-            "↑", "up" -> "up"
-            "↓", "down" -> "down"
-            "←", "left" -> "left"
-            "→", "right" -> "right"
+            "\u2191", "up" -> "up"
+            "\u2193", "down" -> "down"
+            "\u2190", "left" -> "left"
+            "\u2192", "right" -> "right"
             "pgup" -> "pageup"
             "pgdn" -> "pagedown"
             "bksp" -> "backspace"
@@ -469,10 +481,16 @@ class KeyboardActivity : AppCompatActivity() {
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.x - lastX).toInt()
-                    val dy = (event.y - lastY).toInt()
-                    if (dx != 0 || dy != 0) {
-                        sendCommand("MOUSE:$dx,$dy")
+                    accumulatedDx += (event.x - lastX)
+                    accumulatedDy += (event.y - lastY)
+                    
+                    val sendX = accumulatedDx.toInt()
+                    val sendY = accumulatedDy.toInt()
+                    
+                    if (sendX != 0 || sendY != 0) {
+                        sendCommand("MOUSE:$sendX,$sendY")
+                        accumulatedDx -= sendX
+                        accumulatedDy -= sendY
                     }
                     lastX = event.x
                     lastY = event.y
@@ -490,10 +508,17 @@ class KeyboardActivity : AppCompatActivity() {
                 MotionEvent.ACTION_MOVE -> {
                     val centerX = v.width / 2f
                     val centerY = v.height / 2f
-                    val dx = ((event.x - centerX) / 4).toInt()
-                    val dy = ((event.y - centerY) / 4).toInt()
-                    if (dx != 0 || dy != 0) {
-                        sendCommand("MOUSE:$dx,$dy")
+                    
+                    accumulatedDx += (event.x - centerX) / 4f
+                    accumulatedDy += (event.y - centerY) / 4f
+                    
+                    val sendX = accumulatedDx.toInt()
+                    val sendY = accumulatedDy.toInt()
+                    
+                    if (sendX != 0 || sendY != 0) {
+                        sendCommand("MOUSE:$sendX,$sendY")
+                        accumulatedDx -= sendX
+                        accumulatedDy -= sendY
                     }
                     true
                 }
