@@ -98,7 +98,7 @@
         <Button android:text="Enter" style="@style/KeyStyle" app:layout_rowIndex="3" app:layout_widthMultiplier="1.9"/>
 
         <!-- ROW 4: ZXCV -->
-        <Button android:text="Shift" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="2.2"/>
+        <Button android:text="Shift" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.95"/>
         <Button android:text="Z" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
         <Button android:text="X" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
         <Button android:text="C" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
@@ -109,18 +109,20 @@
         <Button android:text="," style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
         <Button android:text="." style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
         <Button android:text="/" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
-        <Button android:text="Shift" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="2.8"/>
+        <Button android:text="Shift" style="@style/KeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
+        <Button android:text="↑" style="@style/NavKeyStyle" app:layout_rowIndex="4" app:layout_widthMultiplier="1.0"/>
 
         <!-- ROW 5: BOTTOM -->
         <Button android:text="Ctrl" style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.2"/>
         <Button android:text="Fn" style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.15"/>
         <Button android:text="Win" style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.2"/>
         <Button android:text="Alt" style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.2"/>
-        <Button android:text=" " style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="6.2"/>
+        <Button android:text=" " style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="4.9"/>
         <Button android:text="Alt" style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.2"/>
         <Button android:text="Ctrl" style="@style/KeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.2"/>
-        <Button android:text="PgUp" style="@style/NavKeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.0"/>
-        <Button android:text="PgDn" style="@style/NavKeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.0"/>
+        <Button android:text="←" style="@style/NavKeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.0"/>
+        <Button android:text="↓" style="@style/NavKeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.0"/>
+        <Button android:text="→" style="@style/NavKeyStyle" app:layout_rowIndex="5" app:layout_widthMultiplier="1.0"/>
 
     </com.example.keylink.KeyboardLayout>
 
@@ -136,7 +138,7 @@
 
     <!-- Circular buttons as separate overlays -->
     <ImageButton
-        android:id="@+id/btnLeftTrackpad"
+        android:id="@+id/btnSwitchTrackpad"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_gravity="bottom|left"
@@ -146,20 +148,20 @@
         android:scaleType="centerInside"
         android:padding="12dp"
         android:elevation="15dp"
-        android:contentDescription="Profile L"/>
+        android:contentDescription="Switch to Trackpad"/>
 
     <ImageButton
-        android:id="@+id/btnRightTrackpad"
+        android:id="@+id/btnSwitchGamepad"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_gravity="bottom|right"
         android:layout_margin="10dp"
         android:background="@drawable/circle_button_bg"
-        app:srcCompat="@drawable/mouse_icon"
+        app:srcCompat="@drawable/ic_gamepad_profile"
         android:scaleType="centerInside"
         android:padding="12dp"
         android:elevation="15dp"
-        android:contentDescription="Profile R"/>
+        android:contentDescription="Switch to Gamepad"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

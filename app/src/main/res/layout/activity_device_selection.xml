@@ -1,189 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000">
 
+    <TextView
+        android:id="@+id/tvLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:text="⚡ KeyLink"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvServerLive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/server_live_bg"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp"
+        android:text="SERVER LIVE"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLogo"
+        app:layout_constraintEnd_toStartOf="@+id/ivSettingsIcon"
+        app:layout_constraintTop_toTopOf="@+id/tvLogo" />
+
+    <ImageView
+        android:id="@+id/ivSettingsIcon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvLogo"
+        app:srcCompat="@drawable/ic_settings"
+        app:tint="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/tvRecentTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Recent connections"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/tvLogo"
+        app:layout_constraintTop_toBottomOf="@+id/tvLogo" />
+
+    <TextView
+        android:id="@+id/tvTotalCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 Total"
+        android:textColor="#448AFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRecentTitle"
+        app:layout_constraintEnd_toEndOf="@+id/ivSettingsIcon"
+        app:layout_constraintTop_toTopOf="@+id/tvRecentTitle" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Tap an online device to start controlling."
+        android:textColor="#888888"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/tvRecentTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvRecentTitle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/deviceRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSubtitle" />
+
     <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Top Bar -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
-
-            <LinearLayout
-                android:id="@+id/llLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/ic_logo"
-                    android:contentDescription="KeyLink Logo"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="KeyLink"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tvServerLive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SERVER LIVE"
-                    android:textColor="#FFFFFF"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/badge_bg"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:layout_marginEnd="12dp"/>
-
-                <ImageView
-                    android:id="@+id/ivSettingsIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/ic_settings"
-                    app:tint="#FFFFFF"
-                    android:contentDescription="Settings Menu"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"/>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <!-- Header -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-            <TextView
-                android:id="@+id/tvHeaderTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Recent connections"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/tvTotalCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="0 Total"
-                android:textColor="#448AFF"
-                android:textSize="12sp"/>
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tvHeaderSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tap an online device to start controlling."
-            android:textColor="#888888"
-            android:textSize="14sp"
-            android:layout_marginBottom="24dp"/>
-
-        <!-- Device List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/deviceRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <!-- Bottom Buttons -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/llShortcutsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/bottom_button_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="16dp">
 
-            <LinearLayout
-                android:id="@+id/llShortcutsButton"
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:srcCompat="@drawable/ic_settings"
+                app:tint="#FFFFFF" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="8dp"
-                android:background="@drawable/help_button_bg"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true">
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    app:srcCompat="@drawable/ic_settings"
-                    app:tint="#FFFFFF"
-                    android:contentDescription="Shortcuts"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shortcuts"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llHelpButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="8dp"
-                android:background="@drawable/help_button_bg"
-                android:clickable="true"
-                android:focusable="true">
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    app:srcCompat="@drawable/ic_help"
-                    app:tint="#FFFFFF"
-                    android:contentDescription="Help"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Help"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:layout_marginStart="8dp"/>
-            </LinearLayout>
+                android:layout_marginStart="8dp"
+                android:text="Keyboard shortcuts"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llTrackpadShortcutsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bottom_button_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:srcCompat="@drawable/mouse_icon"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Trackpad shortcuts"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
-    <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:src="@drawable/ic_add"
+        android:layout_margin="16dp"
         app:backgroundTint="#448AFF"
-        app:tint="#FFFFFF"
-        app:fabSize="normal"
-        android:contentDescription="Add new connection"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="#FFFFFF" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

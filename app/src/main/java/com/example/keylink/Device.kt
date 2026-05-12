@@ -1,7 +1,7 @@
 package com.example.keylink
 
 data class Device(
-    val name: String,
+    var name: String,
     val status: String,
     val ip: String,
     val type: DeviceType,

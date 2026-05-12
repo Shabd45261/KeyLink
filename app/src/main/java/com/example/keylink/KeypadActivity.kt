@@ -1,10 +1,17 @@
 package com.example.keylink
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.Window
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.PrintWriter
@@ -12,6 +19,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
+import kotlin.math.abs
 
 class KeypadActivity : AppCompatActivity() {
 
@@ -21,8 +29,18 @@ class KeypadActivity : AppCompatActivity() {
     
     private var lastX = 0f
     private var lastY = 0f
+    private var isDragging = false
+    
+    // Multi-finger tracking
+    private var startY3 = 0f
+    private var startX3 = 0f
+    private var startY4 = 0f
+    private var startX4 = 0f
+    private var gestureThreshold = 100f
+    private var gesturePerformed = false
 
     private val commandQueue = LinkedBlockingQueue<String>()
+    private lateinit var scaleDetector: ScaleGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +61,29 @@ class KeypadActivity : AppCompatActivity() {
         connectToPc()
         startCommandSender()
         setupTrackpad()
-        setupKeypad()
         setupMouseButtons()
+        setupProfileSwitches()
+    }
+
+    private fun setupProfileSwitches() {
+        findViewById<ImageButton>(R.id.btnFlipOrientation).setOnClickListener {
+            requestedOrientation = if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+        }
+
+        findViewById<ImageButton>(R.id.btnSwitchKeyboard).setOnClickListener {
+            finish()
+        }
+
+        findViewById<ImageButton>(R.id.btnSwitchGamepad).setOnClickListener {
+            val intent = Intent(this, GamepadActivity::class.java)
+            intent.putExtra("PC_IP", pcIp)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun startCommandSender() {
@@ -82,26 +121,134 @@ class KeypadActivity : AppCompatActivity() {
 
     private fun setupTrackpad() {
         val trackpad = findViewById<View>(R.id.largeTrackpad)
+        val ivBg = findViewById<android.widget.ImageView>(R.id.ivTrackpadBg)
+        
+        val sharedPref = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE)
+        val bgUri = sharedPref.getString("trackpad_bg_uri", null)
+        if (bgUri != null) {
+            try {
+                ivBg.setImageURI(Uri.parse(bgUri))
+            } catch (e: Exception) {}
+        }
+        
+        val lBtn = findViewById<Button>(R.id.btnLeftClick)
+        val rBtn = findViewById<Button>(R.id.btnRightClick)
+        val btnColor = sharedPref.getInt("mouse_btn_color", Color.parseColor("#BB86FC"))
+        val btnAlpha = sharedPref.getFloat("mouse_btn_alpha", 1.0f)
+        
+        lBtn.setBackgroundColor(btnColor)
+        lBtn.alpha = btnAlpha
+        rBtn.setBackgroundColor(btnColor)
+        rBtn.alpha = btnAlpha
+        
+        scaleDetector = ScaleGestureDetector(this, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                val scaleFactor = detector.scaleFactor
+                if (abs(scaleFactor - 1.0) > 0.01) {
+                    sendCommand("ZOOM:$scaleFactor")
+                    gesturePerformed = true
+                }
+                return true
+            }
+        })
+
         trackpad.setOnTouchListener { v, event ->
-            when (event.action) {
+            scaleDetector.onTouchEvent(event)
+            
+            val action = event.actionMasked
+            val pointerCount = event.pointerCount
+
+            when (action) {
                 MotionEvent.ACTION_DOWN -> {
                     lastX = event.x
                     lastY = event.y
-                    v.performClick()
-                    true
+                    gesturePerformed = false
+                    isDragging = false
+                }
+                MotionEvent.ACTION_POINTER_DOWN -> {
+                    if (pointerCount == 3) {
+                        startX3 = event.getX(0)
+                        startY3 = event.getY(0)
+                    } else if (pointerCount == 4) {
+                        startX4 = event.getX(0)
+                        startY4 = event.getY(0)
+                    }
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.x - lastX).toInt()
-                    val dy = (event.y - lastY).toInt()
-                    if (dx != 0 || dy != 0) {
-                        sendCommand("MOUSE:$dx,$dy")
+                    if (pointerCount == 1) {
+                        val dx = (event.x - lastX).toInt()
+                        val dy = (event.y - lastY).toInt()
+                        if (dx != 0 || dy != 0) {
+                            if (isDragging) {
+                                sendCommand("DRAG:$dx,$dy")
+                            } else {
+                                sendCommand("MOUSE:$dx,$dy")
+                            }
+                        }
+                    } else if (pointerCount == 2 && !scaleDetector.isInProgress) {
+                        val dx = (event.getX(0) - lastX).toInt()
+                        val dy = (event.getY(0) - lastY).toInt()
+                        if (abs(dx) > 2 || abs(dy) > 2) {
+                            sendCommand("SCROLL:$dx,$dy")
+                            gesturePerformed = true
+                        }
+                    } else if (pointerCount == 3 && !gesturePerformed) {
+                        val dx = event.getX(0) - startX3
+                        val dy = event.getY(0) - startY3
+                        if (abs(dy) > gestureThreshold) {
+                            if (dy < 0) sendCommand("GESTURE:3_UP") else sendCommand("GESTURE:3_DOWN")
+                            gesturePerformed = true
+                        } else if (abs(dx) > gestureThreshold) {
+                            if (dx < 0) sendCommand("GESTURE:3_LEFT") else sendCommand("GESTURE:3_RIGHT")
+                            gesturePerformed = true
+                        }
+                    } else if (pointerCount == 4 && !gesturePerformed) {
+                        val dx = event.getX(0) - startX4
+                        val dy = event.getY(0) - startY4
+                        if (abs(dx) > gestureThreshold) {
+                            if (dx < 0) sendCommand("GESTURE:4_LEFT") else sendCommand("GESTURE:4_RIGHT")
+                            gesturePerformed = true
+                        } else if (abs(dy) > gestureThreshold) {
+                            if (dy < 0) sendCommand("GESTURE:4_UP") else sendCommand("GESTURE:4_DOWN")
+                            gesturePerformed = true
+                        }
                     }
-                    lastX = event.x
-                    lastY = event.y
-                    true
+                    lastX = event.getX(0)
+                    lastY = event.getY(0)
                 }
-                else -> true
+                MotionEvent.ACTION_UP -> {
+                    val duration = event.eventTime - event.downTime
+                    if (pointerCount == 1 && !gesturePerformed && duration < 200) {
+                        val dist = abs(event.x - lastX) + abs(event.y - lastY)
+                        if (dist < 20) sendCommand("CLICK:left")
+                    }
+                    if (isDragging) {
+                        sendCommand("DRAG_RELEASE")
+                        isDragging = false
+                    }
+                    v.performClick()
+                }
+                MotionEvent.ACTION_POINTER_UP -> {
+                    if (pointerCount == 2 && !gesturePerformed) {
+                        sendCommand("CLICK:right")
+                        gesturePerformed = true
+                    } else if (pointerCount == 3 && !gesturePerformed) {
+                        sendCommand("CLICK:middle")
+                        gesturePerformed = true
+                    } else if (pointerCount == 4 && !gesturePerformed) {
+                        sendCommand("GESTURE:4_TAP")
+                        gesturePerformed = true
+                    }
+                }
             }
+            true
+        }
+        
+        // Long press for drag
+        trackpad.setOnLongClickListener {
+            isDragging = true
+            sendCommand("DRAG_START")
+            true
         }
     }
 
@@ -111,52 +258,6 @@ class KeypadActivity : AppCompatActivity() {
         }
         findViewById<Button>(R.id.btnRightClick).setOnClickListener {
             sendCommand("CLICK:right")
-        }
-    }
-
-    private fun setupKeypad() {
-        val numIds = intArrayOf(
-            R.id.num_0, R.id.num_1, R.id.num_2, R.id.num_3, R.id.num_4,
-            R.id.num_5, R.id.num_6, R.id.num_7, R.id.num_8, R.id.num_9,
-            R.id.num_dot, R.id.num_enter
-        )
-
-        for (id in numIds) {
-            val button = findViewById<Button>(id)
-            val handler = android.os.Handler(android.os.Looper.getMainLooper())
-            var repeatRunnable: Runnable? = null
-            
-            button.setOnTouchListener { v, event ->
-                val keyText = (v as Button).text.toString().lowercase()
-                val action = event.actionMasked
-                
-                when (action) {
-                    MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                        sendCommand("DOWN:$keyText")
-                        
-                        // Auto-repeat for numbers and dot
-                        if (keyText != "enter") {
-                            repeatRunnable?.let { handler.removeCallbacks(it) }
-                            repeatRunnable = object : Runnable {
-                                override fun run() {
-                                    sendCommand("DOWN:$keyText")
-                                    handler.postDelayed(this, 50)
-                                }
-                            }
-                            handler.postDelayed(repeatRunnable!!, 400)
-                        }
-                    }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
-                        sendCommand("UP:$keyText")
-                        repeatRunnable?.let { handler.removeCallbacks(it) }
-                        repeatRunnable = null
-                    }
-                }
-                if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
-                    v.performClick()
-                }
-                true
-            }
         }
     }
 

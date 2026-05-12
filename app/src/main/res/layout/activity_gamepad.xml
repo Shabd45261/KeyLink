@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Gamepad Profile (Coming Soon)"
+        android:textColor="#FFFFFF"/>
+
+    <!-- Profile Switches (Top) -->
+    <ImageButton
+        android:id="@+id/btnSwitchKeyboard"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="16dp"
+        android:background="@drawable/circle_button_bg"
+        android:padding="12dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/ic_keyboard_profile"
+        android:contentDescription="Switch to Keyboard"/>
+
+    <ImageButton
+        android:id="@+id/btnSwitchTrackpad"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/circle_button_bg"
+        android:padding="12dp"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/mouse_icon"
+        android:contentDescription="Switch to Trackpad"/>
+
+</FrameLayout>

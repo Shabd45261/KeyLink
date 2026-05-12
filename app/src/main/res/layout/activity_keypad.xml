@@ -1,62 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#121212">
 
-    <!-- Large Trackpad Area -->
-    <View
-        android:id="@+id/largeTrackpad"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#1A1A1A"
-        android:layout_margin="8dp" />
-
-    <!-- Mouse Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:padding="8dp">
-        <Button
-            android:id="@+id/btnLeftClick"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Large Fullscreen Trackpad Area -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="L-Click"
-            android:layout_marginEnd="4dp"/>
-        <Button
-            android:id="@+id/btnRightClick"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="R-Click"
-            android:layout_marginStart="4dp"/>
+            android:layout_margin="8dp">
+
+            <ImageView
+                android:id="@+id/ivTrackpadBg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="#1A1A1A"/>
+
+            <View
+                android:id="@+id/largeTrackpad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+        </FrameLayout>
+
+        <!-- Massive Mouse Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <Button
+                android:id="@+id/btnLeftClick"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="L-CLICK"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:backgroundTint="#BB86FC"
+                android:textColor="#000000"
+                android:layout_marginEnd="6dp"/>
+            <Button
+                android:id="@+id/btnRightClick"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="R-CLICK"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:backgroundTint="#BB86FC"
+                android:textColor="#000000"
+                android:layout_marginStart="6dp"/>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Keypad at bottom -->
-    <GridLayout
-        android:layout_width="match_parent"
+    <!-- Top Controls Overlays -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:padding="8dp"
-        android:layout_gravity="center"
-        android:splitMotionEvents="true">
+        android:layout_gravity="top|start"
+        android:layout_margin="16dp"
+        android:orientation="horizontal">
 
-        <Button android:id="@+id/num_1" android:text="1" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_2" android:text="2" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_3" android:text="3" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_4" android:text="4" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_5" android:text="5" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_6" android:text="6" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_7" android:text="7" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_8" android:text="8" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_9" android:text="9" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_dot" android:text="." style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_0" android:text="0" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-        <Button android:id="@+id/num_enter" android:text="Enter" style="@style/KeyStyle" android:layout_width="0dp" android:layout_gravity="fill_horizontal" android:layout_columnWeight="1" android:layout_height="60dp"/>
-    </GridLayout>
+        <ImageButton
+            android:id="@+id/btnFlipOrientation"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/circle_button_bg"
+            app:srcCompat="@drawable/ic_help"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:contentDescription="Flip Orientation"/>
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btnSwitchKeyboard"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/circle_button_bg"
+            app:srcCompat="@drawable/ic_keyboard_profile"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:contentDescription="Switch to Keyboard"/>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnSwitchGamepad"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/circle_button_bg"
+        app:srcCompat="@drawable/ic_gamepad_profile"
+        android:padding="10dp"
+        android:scaleType="centerInside"
+        android:contentDescription="Switch to Gamepad"/>
+
+</FrameLayout>

@@ -32,6 +32,7 @@ class DeviceSelectionActivity : AppCompatActivity() {
         val fabAdd: FloatingActionButton = findViewById(R.id.fabAdd)
         val ivSettingsIcon: ImageView = findViewById(R.id.ivSettingsIcon)
         val llShortcutsButton: LinearLayout = findViewById(R.id.llShortcutsButton)
+        val llTrackpadShortcutsButton: LinearLayout = findViewById(R.id.llTrackpadShortcutsButton)
 
         adapter = DeviceAdapter(deviceList, 
             onClick = { device ->
@@ -44,7 +45,7 @@ class DeviceSelectionActivity : AppCompatActivity() {
                 }
             },
             onLongClick = { device ->
-                showDeleteDialog(device)
+                showDeviceOptionsDialog(device)
             }
         )
 
@@ -61,13 +62,47 @@ class DeviceSelectionActivity : AppCompatActivity() {
 
         llShortcutsButton.setOnClickListener {
             val intent = Intent(this, ShortcutsActivity::class.java)
-            // If we have an online device, pass its IP
             val onlineDevice = deviceList.find { it.isOnline }
             if (onlineDevice != null) {
                 intent.putExtra("PC_IP", onlineDevice.ip)
             }
             startActivity(intent)
         }
+
+        llTrackpadShortcutsButton.setOnClickListener {
+            startActivity(Intent(this, TrackpadShortcutsActivity::class.java))
+        }
+    }
+
+    private fun showDeviceOptionsDialog(device: Device) {
+        val options = arrayOf("Rename", "Delete")
+        AlertDialog.Builder(this)
+            .setTitle(device.name)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showRenameDialog(device)
+                    1 -> showDeleteDialog(device)
+                }
+            }
+            .show()
+    }
+
+    private fun showRenameDialog(device: Device) {
+        val input = EditText(this)
+        input.setText(device.name)
+        AlertDialog.Builder(this)
+            .setTitle("Rename Device")
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val newName = input.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    device.name = newName
+                    saveDevices()
+                    updateUI()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showDeleteDialog(device: Device) {
@@ -83,12 +118,6 @@ class DeviceSelectionActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun clearAllDevices() {
-        deviceList.clear()
-        saveDevices()
-        updateUI()
-    }
-
     private fun showConnectDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Connect to PC")
@@ -99,7 +128,6 @@ class DeviceSelectionActivity : AppCompatActivity() {
             val ip = input.text.toString().trim()
             if (ip.isNotEmpty()) {
                 val newDevice = Device("PC @ $ip", "Manual Connection", ip, DeviceType.MONITOR, true)
-                // Add if not exists or replace
                 val existing = deviceList.find { it.ip == ip }
                 if (existing != null) deviceList.remove(existing)
                 
@@ -159,7 +187,6 @@ class DeviceSelectionActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         } else {
-            // Default mock data only on first run
             deviceList.add(Device("Workstation", "Seen 1m ago", "192.168.1.101", DeviceType.MONITOR, true))
             deviceList.add(Device("MacBook Pro", "Seen 12m ago", "192.168.1.102", DeviceType.LAPTOP, true))
             saveDevices()

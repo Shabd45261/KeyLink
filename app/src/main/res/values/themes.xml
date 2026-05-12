@@ -44,4 +44,23 @@
     <style name="NavKeyStyle" parent="KeyStyle">
         <item name="android:textSize">10sp</item>
     </style>
+
+    <style name="GestureHeader">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#448AFF</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="GestureItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#E0E0E0</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:background">#1A1A1A</item>
+        <item name="android:padding">12dp</item>
+    </style>
 </resources>

@@ -20,6 +20,7 @@ class DeviceAdapter(
         val tvName: TextView = view.findViewById(R.id.tvDeviceName)
         val tvStatus: TextView = view.findViewById(R.id.tvDeviceStatus)
         val ivArrow: ImageView = view.findViewById(R.id.ivArrow)
+        val vStatusDot: View = view.findViewById(R.id.vStatusDot)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
@@ -45,11 +46,13 @@ class DeviceAdapter(
             holder.ivIcon.alpha = 1.0f
             holder.ivArrow.setColorFilter(Color.WHITE)
             holder.ivArrow.alpha = 1.0f
+            holder.vStatusDot.background.setTint(Color.GREEN)
         } else {
             holder.tvName.setTextColor(Color.parseColor("#444444"))
             holder.ivIcon.alpha = 0.3f
             holder.ivArrow.setColorFilter(Color.parseColor("#FF5252"))
             holder.ivArrow.alpha = 0.5f
+            holder.vStatusDot.background.setTint(Color.RED)
         }
 
         holder.itemView.setOnClickListener { onClick(device) }

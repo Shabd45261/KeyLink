@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:srcCompat="@drawable/ic_settings"
+            app:tint="#FFFFFF"
+            android:padding="4dp"
+            android:rotation="180"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Trackpad Gestures"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView android:text="BASIC GESTURES" style="@style/GestureHeader"/>
+            <TextView android:text="1-finger tap: Left click" style="@style/GestureItem"/>
+            <TextView android:text="2-finger tap: Right click" style="@style/GestureItem"/>
+            <TextView android:text="2-finger drag: Scroll" style="@style/GestureItem"/>
+            <TextView android:text="Pinch in/out: Zoom" style="@style/GestureItem"/>
+            <TextView android:text="Long press + drag: Drag item" style="@style/GestureItem"/>
+
+            <TextView android:text="3-FINGER GESTURES" style="@style/GestureHeader" android:layout_marginTop="20dp"/>
+            <TextView android:text="Swipe up: Task View (Win+Tab)" style="@style/GestureItem"/>
+            <TextView android:text="Swipe down: Show Desktop (Win+D)" style="@style/GestureItem"/>
+            <TextView android:text="Swipe left/right: Switch apps (Alt+Tab)" style="@style/GestureItem"/>
+            <TextView android:text="Tap: Middle Click" style="@style/GestureItem"/>
+
+            <TextView android:text="4-FINGER GESTURES" style="@style/GestureHeader" android:layout_marginTop="20dp"/>
+            <TextView android:text="Swipe left/right: Switch Desktops" style="@style/GestureItem"/>
+            <TextView android:text="Swipe up: Task View" style="@style/GestureItem"/>
+            <TextView android:text="Swipe down: Desktop" style="@style/GestureItem"/>
+            <TextView android:text="Tap: Notification Center (Win+A)" style="@style/GestureItem"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

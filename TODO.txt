@@ -1,0 +1,36 @@
+KeyLink Project TODO List - 12 May 2026
+
+1. Keyboard Improvements
+    [x] Add up, down, left, right arrow keys in the keyboard in proper format.
+    [x] Add option of changing keys colors.
+        [x] Feature: Change color of all keys at once.
+            [x] Rectangular pop-up window for color selection.
+            [x] Transparency slider for the whole keyboard.
+            [x] Vibrate on/off for all keys.
+        [x] Feature: Change color and sound of specific keys (long-press).
+            [x] Rectangular pop-up, transparency, color, vibrate on/off, custom sound.
+        [x] Reset to default options for both.
+
+2. Trackpad Improvements (KeypadActivity)
+    [x] Add background image support for trackpad in settings.
+    [x] Add transparency level setting for L-Button and R-Button.
+    [x] Add color setting for L-Button and R-Button.
+    [x] Add orientation flip switch (Portrait <-> Landscape) in trackpad profile (top-left).
+    [x] Add button to switch back to Keyboard profile (top-right).
+
+3. Gamepad Profile
+    [x] Create Gamepad activity/profile (empty layout for now).
+    [x] Add 3-way profile switching (Keyboard, Trackpad, Gamepad) using provided icons.
+    [x] Update bottom buttons in Keyboard: Trackpad (left), Gamepad (right).
+    [x] Update top buttons in Trackpad: Keyboard (left), Gamepad (right).
+    [x] Update top buttons in Gamepad: Keyboard (left), Trackpad (right).
+
+4. Customization & Settings
+    [x] Rename "Resize Keyboard" to "Customize Keyboard".
+    [x] Move "Resize Keyboard" inside "Customize Keyboard".
+    [x] Add auto resize feature for Keyboard in settings.
+    [x] Fully create the Settings panel using CardView layout.
+
+5. Home Screen (DeviceSelectionActivity)
+    [x] Add feature to rename devices in the recent connections list.
+    [x] Add online (green dot) and offline (red dot) status indicators for devices.

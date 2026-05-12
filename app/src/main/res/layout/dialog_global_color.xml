@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#1A1A1A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tvDialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customize Keys"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transparency"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <SeekBar
+            android:id="@+id/sbTransparency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="100"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Color"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <GridLayout
+            android:id="@+id/colorGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="4"
+            android:layout_marginBottom="24dp">
+            <View android:tag="#2A2A2A" android:layout_width="40dp" android:layout_height="40dp" android:background="#2A2A2A" android:layout_margin="8dp"/>
+            <View android:tag="#448AFF" android:layout_width="40dp" android:layout_height="40dp" android:background="#448AFF" android:layout_margin="8dp"/>
+            <View android:tag="#FF5252" android:layout_width="40dp" android:layout_height="40dp" android:background="#FF5252" android:layout_margin="8dp"/>
+            <View android:tag="#4CAF50" android:layout_width="40dp" android:layout_height="40dp" android:background="#4CAF50" android:layout_margin="8dp"/>
+            <View android:tag="#FFC107" android:layout_width="40dp" android:layout_height="40dp" android:background="#FFC107" android:layout_margin="8dp"/>
+            <View android:tag="#E91E63" android:layout_width="40dp" android:layout_height="40dp" android:background="#E91E63" android:layout_margin="8dp"/>
+            <View android:tag="#9C27B0" android:layout_width="40dp" android:layout_height="40dp" android:background="#9C27B0" android:layout_margin="8dp"/>
+            <View android:tag="#FFFFFF" android:layout_width="40dp" android:layout_height="40dp" android:background="#FFFFFF" android:layout_margin="8dp"/>
+        </GridLayout>
+
+        <CheckBox
+            android:id="@+id/cbVibrate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vibrate on press"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnSelectKeySound"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Custom Sound"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnReset"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RESET TO DEFAULT"
+            android:textColor="#FF5252"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnApply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="APPLY"
+            android:backgroundTint="#448AFF"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

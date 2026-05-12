@@ -2,6 +2,9 @@ package com.example.keylink
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -42,6 +45,18 @@ class KeyboardActivity : AppCompatActivity() {
     private lateinit var statusDot: View
     private lateinit var tvStatus: TextView
 
+    private var mediaPlayer: MediaPlayer? = null
+    private var customSoundUri: String? = null
+    
+    private val keySettings = mutableMapOf<String, KeySetting>()
+
+    data class KeySetting(
+        val color: Int?,
+        val alpha: Float?,
+        val vibrate: Boolean?,
+        val soundUri: String?
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -65,6 +80,11 @@ class KeyboardActivity : AppCompatActivity() {
 
         val sharedPref = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE)
         vibrationEnabled = sharedPref.getBoolean("vibration_enabled", true)
+        customSoundUri = sharedPref.getString("custom_sound_uri", null)
+        
+        if (customSoundUri != null) {
+            initMediaPlayer(customSoundUri!!)
+        }
         
         isResizeMode = intent.getBooleanExtra("RESIZE_MODE", false)
 
@@ -81,23 +101,27 @@ class KeyboardActivity : AppCompatActivity() {
         container.xOffset = sharedPref.getFloat("kb_x_offset", 0f)
         container.yOffset = sharedPref.getFloat("kb_y_offset", 0f)
 
+        loadKeySettings()
         setupAllKeys(container)
 
         if (isResizeMode) {
             setupResizeLogic(container)
         }
 
-        val btnLeftTrackpad = findViewById<ImageButton>(R.id.btnLeftTrackpad)
-        val btnRightTrackpad = findViewById<ImageButton>(R.id.btnRightTrackpad)
+        val btnSwitchTrackpad = findViewById<ImageButton>(R.id.btnSwitchTrackpad)
+        val btnSwitchGamepad = findViewById<ImageButton>(R.id.btnSwitchGamepad)
 
-        val openKeypad = View.OnClickListener {
+        btnSwitchTrackpad.setOnClickListener {
             val intent = Intent(this, KeypadActivity::class.java)
             intent.putExtra("PC_IP", pcIp)
             startActivity(intent)
         }
 
-        btnLeftTrackpad.setOnClickListener(openKeypad)
-        btnRightTrackpad.setOnClickListener(openKeypad)
+        btnSwitchGamepad.setOnClickListener {
+            val intent = Intent(this, GamepadActivity::class.java)
+            intent.putExtra("PC_IP", pcIp)
+            startActivity(intent)
+        }
     }
 
     private fun startCommandSender() {
@@ -174,23 +198,99 @@ class KeyboardActivity : AppCompatActivity() {
         }
     }
     
+    private fun initMediaPlayer(uriString: String) {
+        try {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(this@KeyboardActivity, Uri.parse(uriString))
+                prepare()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun playCustomSound() {
+        mediaPlayer?.let {
+            try {
+                if (it.isPlaying) {
+                    it.pause()
+                    it.seekTo(0)
+                }
+                it.start()
+            } catch (e: Exception) {
+                // If something went wrong, try re-init once
+                mediaPlayer = null
+                customSoundUri?.let { uri -> initMediaPlayer(uri) }
+                mediaPlayer?.start()
+            }
+        }
+    }
+
+    private fun loadKeySettings() {
+        val sharedPref = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE)
+        val json = sharedPref.getString("specific_key_settings", null)
+        if (json != null) {
+            try {
+                val obj = org.json.JSONObject(json)
+                obj.keys().forEach { key ->
+                    val s = obj.getJSONObject(key)
+                    keySettings[key] = KeySetting(
+                        if (s.has("color")) s.getInt("color") else null,
+                        if (s.has("alpha")) s.getDouble("alpha").toFloat() else null,
+                        if (s.has("vibrate")) s.getBoolean("vibrate") else null,
+                        if (s.has("soundUri")) s.getString("soundUri") else null
+                    )
+                }
+            } catch (e: Exception) {}
+        }
+    }
+
     private fun setupAllKeys(view: View) {
         if (view is Button) {
+            val keyText = view.text.toString()
+            val setting = keySettings[keyText]
+            
             val handler = android.os.Handler(android.os.Looper.getMainLooper())
             var repeatRunnable: Runnable? = null
 
+            // Apply colors
+            val sharedPref = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE)
+            val globalColor = sharedPref.getInt("kb_key_color", Color.parseColor("#2A2A2A"))
+            val globalAlpha = sharedPref.getFloat("kb_key_alpha", 1.0f)
+            
+            val finalColor = setting?.color ?: globalColor
+            val finalAlpha = setting?.alpha ?: globalAlpha
+            
+            // Set background color with alpha to keep text visible
+            val alphaInt = (finalAlpha * 255).toInt()
+            val colorWithAlpha = Color.argb(alphaInt, Color.red(finalColor), Color.green(finalColor), Color.blue(finalColor))
+            
+            view.setBackgroundColor(colorWithAlpha)
+            // If it's a MaterialButton, we might need to use backgroundTintList
+            if (view is com.google.android.material.button.MaterialButton) {
+                view.backgroundTintList = android.content.res.ColorStateList.valueOf(finalColor).withAlpha(alphaInt)
+                view.setStrokeColor(android.content.res.ColorStateList.valueOf(Color.BLACK))
+                view.setStrokeWidth(1)
+            }
+
             view.setOnTouchListener { v, event ->
-                val keyText = (v as Button).text.toString()
                 val action = event.actionMasked
                 
                 when (action) {
                     MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                        if (vibrationEnabled) {
+                        val vibrate = setting?.vibrate ?: vibrationEnabled
+                        if (vibrate) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
                             } else {
                                 vibrator.vibrate(20)
                             }
+                        }
+                        
+                        if (setting?.soundUri != null) {
+                            playSpecificSound(setting.soundUri)
+                        } else {
+                            playCustomSound()
                         }
                         sendKeyCommand("DOWN", keyText)
 
@@ -217,11 +317,105 @@ class KeyboardActivity : AppCompatActivity() {
                 }
                 true
             }
+
+            view.setOnLongClickListener {
+                showSpecificKeyPopup(keyText, view)
+                true
+            }
+
         } else if (view is ViewGroup) {
             for (i in 0 until view.childCount) {
                 setupAllKeys(view.getChildAt(i))
             }
         }
+    }
+
+    private fun playSpecificSound(uri: String) {
+        try {
+            val mp = MediaPlayer()
+            mp.setDataSource(this, Uri.parse(uri))
+            mp.prepare()
+            mp.setOnCompletionListener { it.release() }
+            mp.start()
+        } catch (e: Exception) {}
+    }
+
+    private fun showSpecificKeyPopup(keyText: String, view: Button) {
+        val dialog = android.app.Dialog(this)
+        dialog.setContentView(R.layout.dialog_global_color)
+        
+        val tvTitle = dialog.findViewById<TextView>(R.id.tvDialogTitle)
+        tvTitle.text = "Customize Key: $keyText"
+        
+        val sbTransparency = dialog.findViewById<android.widget.SeekBar>(R.id.sbTransparency)
+        val cbVibrate = dialog.findViewById<android.widget.CheckBox>(R.id.cbVibrate)
+        val btnSound = dialog.findViewById<Button>(R.id.btnSelectKeySound)
+        val grid = dialog.findViewById<android.widget.GridLayout>(R.id.colorGrid)
+        
+        btnSound.visibility = View.VISIBLE
+        
+        val currentSetting = keySettings[keyText]
+        sbTransparency.progress = ((currentSetting?.alpha ?: view.alpha) * 100).toInt()
+        cbVibrate.isChecked = currentSetting?.vibrate ?: vibrationEnabled
+        
+        var selectedColor = currentSetting?.color ?: Color.parseColor("#2A2A2A")
+        
+        for (i in 0 until grid.childCount) {
+            val child = grid.getChildAt(i)
+            child.setOnClickListener {
+                selectedColor = Color.parseColor(it.tag.toString())
+                Toast.makeText(this, "Color selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnSound.setOnClickListener {
+            // In a real app, I'd open a file picker. For now, let's just show a message.
+            Toast.makeText(this, "Sound picker coming soon", Toast.LENGTH_SHORT).show()
+        }
+
+        dialog.findViewById<Button>(R.id.btnReset).setOnClickListener {
+            keySettings.remove(keyText)
+            saveKeySettings()
+            view.setBackgroundColor(getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE).getInt("kb_key_color", Color.parseColor("#2A2A2A")))
+            view.alpha = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE).getFloat("kb_key_alpha", 1.0f)
+            dialog.dismiss()
+        }
+        
+        dialog.findViewById<Button>(R.id.btnApply).setOnClickListener {
+            val alpha = sbTransparency.progress / 100f
+            val vibrate = cbVibrate.isChecked
+            
+            val newSetting = KeySetting(selectedColor, alpha, vibrate, currentSetting?.soundUri)
+            keySettings[keyText] = newSetting
+            saveKeySettings()
+            
+            val alphaInt = (alpha * 255).toInt()
+            if (view is com.google.android.material.button.MaterialButton) {
+                view.backgroundTintList = android.content.res.ColorStateList.valueOf(selectedColor).withAlpha(alphaInt)
+                view.setStrokeColor(android.content.res.ColorStateList.valueOf(Color.BLACK))
+                view.setStrokeWidth(1)
+            } else {
+                val colorWithAlpha = Color.argb(alphaInt, Color.red(selectedColor), Color.green(selectedColor), Color.blue(selectedColor))
+                view.setBackgroundColor(colorWithAlpha)
+            }
+            
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun saveKeySettings() {
+        val sharedPref = getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE)
+        val json = org.json.JSONObject()
+        keySettings.forEach { (key, setting) ->
+            val s = org.json.JSONObject()
+            setting.color?.let { s.put("color", it) }
+            setting.alpha?.let { s.put("alpha", it.toDouble()) }
+            setting.vibrate?.let { s.put("vibrate", it) }
+            setting.soundUri?.let { s.put("soundUri", it) }
+            json.put(key, s)
+        }
+        sharedPref.edit().putString("specific_key_settings", json.toString()).apply()
     }
 
     private fun isModifier(keyText: String): Boolean {
@@ -234,10 +428,10 @@ class KeyboardActivity : AppCompatActivity() {
         
         // Fix Mappings
         key = when (key) {
-            "↑" -> "up"
-            "↓" -> "down"
-            "←" -> "left"
-            "→" -> "right"
+            "↑", "up" -> "up"
+            "↓", "down" -> "down"
+            "←", "left" -> "left"
+            "→", "right" -> "right"
             "pgup" -> "pageup"
             "pgdn" -> "pagedown"
             "bksp" -> "backspace"
@@ -341,6 +535,8 @@ class KeyboardActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
         thread { try { socket?.close() } catch (e: Exception) {} }
     }
 }
