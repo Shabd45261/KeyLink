@@ -15,25 +15,23 @@
     <!-- Profile Switches (Top) -->
     <ImageButton
         android:id="@+id/btnSwitchKeyboard"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="top|start"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_button_bg"
-        android:padding="12dp"
-        android:scaleType="centerInside"
+        android:layout_margin="12dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_keyboard_profile"
         android:contentDescription="Switch to Keyboard"/>
 
     <ImageButton
         android:id="@+id/btnSwitchTrackpad"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="top|end"
-        android:layout_margin="16dp"
-        android:background="@drawable/circle_button_bg"
-        android:padding="12dp"
-        android:scaleType="centerInside"
+        android:layout_margin="12dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/mouse_icon"
         android:contentDescription="Switch to Trackpad"/>
 
