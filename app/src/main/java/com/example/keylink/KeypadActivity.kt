@@ -33,6 +33,11 @@ class KeypadActivity : AppCompatActivity() {
     private var accumulatedDy = 0f
     private var isDragging = false
     
+    // Smooth Mouse Variables
+    private var smoothDx = 0f
+    private var smoothDy = 0f
+    private val smoothingFactor = 0.25f
+    
     // Multi-finger tracking
     private var startY3 = 0f
     private var startX3 = 0f
@@ -177,6 +182,8 @@ class KeypadActivity : AppCompatActivity() {
                 MotionEvent.ACTION_DOWN -> {
                     lastX = event.x
                     lastY = event.y
+                    smoothDx = 0f
+                    smoothDy = 0f
                     gesturePerformed = false
                     isDragging = false
                 }
@@ -191,11 +198,17 @@ class KeypadActivity : AppCompatActivity() {
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (pointerCount == 1) {
-                        accumulatedDx += (event.x - lastX)
-                        accumulatedDy += (event.y - lastY)
+                        val rawDx = event.x - lastX
+                        val rawDy = event.y - lastY
+
+                        smoothDx = smoothDx + smoothingFactor * (rawDx - smoothDx)
+                        smoothDy = smoothDy + smoothingFactor * (rawDy - smoothDy)
+
+                        accumulatedDx += smoothDx
+                        accumulatedDy += smoothDy
                         
-                        val sendX = accumulatedDx.toInt()
-                        val sendY = accumulatedDy.toInt()
+                        val sendX = (accumulatedDx * 1.5f).toInt()
+                        val sendY = (accumulatedDy * 1.5f).toInt()
                         
                         if (sendX != 0 || sendY != 0) {
                             if (isDragging) {
@@ -203,8 +216,8 @@ class KeypadActivity : AppCompatActivity() {
                             } else {
                                 sendCommand("MOUSE:$sendX,$sendY")
                             }
-                            accumulatedDx -= sendX
-                            accumulatedDy -= sendY
+                            accumulatedDx -= sendX / 1.5f
+                            accumulatedDy -= sendY / 1.5f
                         }
                     } else if (pointerCount == 2 && !scaleDetector.isInProgress) {
                         val dx = (event.getX(0) - lastX).toInt()

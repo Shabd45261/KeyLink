@@ -36,6 +36,11 @@ class KeyboardActivity : AppCompatActivity() {
     private var accumulatedDx = 0f
     private var accumulatedDy = 0f
     
+    // Smooth Mouse Variables
+    private var smoothDx = 0f
+    private var smoothDy = 0f
+    private val smoothingFactor = 0.25f // Lower = smoother, but more lag
+    
     private var isCapsLock = false
     private lateinit var vibrator: Vibrator
     private var vibrationEnabled = true
@@ -454,20 +459,29 @@ class KeyboardActivity : AppCompatActivity() {
                 MotionEvent.ACTION_DOWN -> {
                     lastX = event.x
                     lastY = event.y
+                    smoothDx = 0f
+                    smoothDy = 0f
                     v.performClick()
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    accumulatedDx += (event.x - lastX)
-                    accumulatedDy += (event.y - lastY)
+                    val rawDx = event.x - lastX
+                    val rawDy = event.y - lastY
                     
-                    val sendX = accumulatedDx.toInt()
-                    val sendY = accumulatedDy.toInt()
+                    // Simple Exponential Smoothing
+                    smoothDx = smoothDx + smoothingFactor * (rawDx - smoothDx)
+                    smoothDy = smoothDy + smoothingFactor * (rawDy - smoothDy)
+                    
+                    accumulatedDx += smoothDx
+                    accumulatedDy += smoothDy
+                    
+                    val sendX = (accumulatedDx * 1.5f).toInt() // Sensitivity boost
+                    val sendY = (accumulatedDy * 1.5f).toInt()
                     
                     if (sendX != 0 || sendY != 0) {
                         sendCommand("MOUSE:$sendX,$sendY")
-                        accumulatedDx -= sendX
-                        accumulatedDy -= sendY
+                        accumulatedDx -= sendX / 1.5f
+                        accumulatedDy -= sendY / 1.5f
                     }
                     lastX = event.x
                     lastY = event.y
@@ -486,8 +500,14 @@ class KeyboardActivity : AppCompatActivity() {
                     val centerX = v.width / 2f
                     val centerY = v.height / 2f
                     
-                    accumulatedDx += (event.x - centerX) / 4f
-                    accumulatedDy += (event.y - centerY) / 4f
+                    val rawDx = (event.x - centerX) / 6f
+                    val rawDy = (event.y - centerY) / 6f
+
+                    smoothDx = smoothDx + smoothingFactor * (rawDx - smoothDx)
+                    smoothDy = smoothDy + smoothingFactor * (rawDy - smoothDy)
+                    
+                    accumulatedDx += smoothDx
+                    accumulatedDy += smoothDy
                     
                     val sendX = accumulatedDx.toInt()
                     val sendY = accumulatedDy.toInt()
@@ -500,6 +520,8 @@ class KeyboardActivity : AppCompatActivity() {
                     true
                 }
                 MotionEvent.ACTION_DOWN -> {
+                    smoothDx = 0f
+                    smoothDy = 0f
                     v.performClick()
                     true
                 }

@@ -158,13 +158,12 @@ class KeyLinkServer:
 
             elif command.startswith("MOUSE:"):
                 coords = command.split(":")[1].split(",")
-                # Using win_move_mouse for instant reaction
-                win_move_mouse(int(coords[0]) * 2, int(coords[1]) * 2)
+                win_move_mouse(int(coords[0]), int(coords[1]))
 
             elif command.startswith("SCROLL:"):
                 coords = command.split(":")[1].split(",")
-                pyautogui.scroll(int(coords[1]) * -2)
-                pyautogui.hscroll(int(coords[0]) * 2)
+                pyautogui.scroll(int(coords[1]) * -3)
+                pyautogui.hscroll(int(coords[0]) * 3)
 
             elif command.startswith("ZOOM:"):
                 factor = float(command.split(":")[1])
@@ -173,7 +172,7 @@ class KeyLinkServer:
 
             elif command.startswith("DRAG:"):
                 coords = command.split(":")[1].split(",")
-                win_move_mouse(int(coords[0]) * 2, int(coords[1]) * 2)
+                win_move_mouse(int(coords[0]), int(coords[1]))
 
             elif command.startswith("DRAG_START"):
                 win_click_mouse("left", "down")
