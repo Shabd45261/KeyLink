@@ -118,6 +118,9 @@ class KeyboardActivity : AppCompatActivity() {
 
         if (isResizeMode) {
             setupResizeLogic(container)
+        } else {
+            findViewById<View>(R.id.resizeOverlay).visibility = View.GONE
+            findViewById<View>(R.id.btnSaveResize).visibility = View.GONE
         }
 
         val btnSwitchTrackpad = findViewById<ImageButton>(R.id.btnSwitchTrackpad)
@@ -151,63 +154,37 @@ class KeyboardActivity : AppCompatActivity() {
     }
 
     private fun setupResizeLogic(container: KeyboardLayout) {
-        container.setBackgroundColor(0x33448AFF)
-        
-        var startX1 = 0f
-        var startY1 = 0f
-        var startX2 = 0f
-        var startY2 = 0f
-        var baseWidthScale = container.widthScale
-        var baseHeightScale = container.heightScale
-        var baseXOffset = container.xOffset
-        var baseYOffset = container.yOffset
+        val overlay = findViewById<ResizeOverlayView>(R.id.resizeOverlay)
+        val btnSave = findViewById<Button>(R.id.btnSaveResize)
 
-        container.setOnTouchListener { v, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    startX1 = event.x
-                    startY1 = event.y
-                    baseXOffset = container.xOffset
-                    baseYOffset = container.yOffset
-                }
-                MotionEvent.ACTION_POINTER_DOWN -> {
-                    startX1 = event.getX(0)
-                    startY1 = event.getY(0)
-                    startX2 = event.getX(1)
-                    startY2 = event.getY(1)
-                    baseWidthScale = container.widthScale
-                    baseHeightScale = container.heightScale
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (event.pointerCount == 1) {
-                        // Move
-                        container.xOffset = baseXOffset + (event.x - startX1)
-                        container.yOffset = baseYOffset + (event.y - startY1)
-                    } else if (event.pointerCount == 2) {
-                        // Resize (PowerPoint style)
-                        val dx = Math.abs(event.getX(0) - event.getX(1))
-                        val dy = Math.abs(event.getY(0) - event.getY(1))
-                        val startDx = Math.abs(startX1 - startX2)
-                        val startDy = Math.abs(startY1 - startY2)
-                        
-                        if (startDx > 10) container.widthScale = baseWidthScale * (dx / startDx)
-                        if (startDy > 10) container.heightScale = baseHeightScale * (dy / startDy)
-                    }
-                    container.requestLayout()
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                    // Save settings
-                    getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE).edit()
-                        .putFloat("kb_width_scale", container.widthScale)
-                        .putFloat("kb_height_scale", container.heightScale)
-                        .putFloat("kb_x_offset", container.xOffset)
-                        .putFloat("kb_y_offset", container.yOffset)
-                        .apply()
-                }
-            }
-            v.performClick()
-            true
+        overlay.visibility = View.VISIBLE
+        btnSave.visibility = View.VISIBLE
+        
+        container.setBackgroundColor(0x33448AFF)
+        overlay.setTarget(container) {
+            // Callback when resized if needed
         }
+
+        btnSave.setOnClickListener {
+            // Save settings
+            getSharedPreferences("KeyLinkPrefs", Context.MODE_PRIVATE).edit()
+                .putFloat("kb_width_scale", container.widthScale)
+                .putFloat("kb_height_scale", container.heightScale)
+                .putFloat("kb_x_offset", container.xOffset)
+                .putFloat("kb_y_offset", container.yOffset)
+                .apply()
+            
+            Toast.makeText(this, "Layout Saved", Toast.LENGTH_SHORT).show()
+            
+            // Exit resize mode and go back or refresh
+            val intent = Intent(this, CustomizeKeyboardActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
+        }
+
+        // Disable normal key touches in resize mode
+        container.setOnTouchListener { _, _ -> true }
     }
     
     private fun initMediaPlayer(uriString: String) {

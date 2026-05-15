@@ -126,6 +126,12 @@
 
     </com.example.keylink.KeyboardLayout>
 
+    <com.example.keylink.ResizeOverlayView
+        android:id="@+id/resizeOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
     <!-- Trackpoint overlaid near center -->
     <View
         android:id="@+id/trackpoint"
@@ -182,5 +188,16 @@
             android:textColor="#FFFFFF"
             android:textSize="12sp"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSaveResize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:text="Save Layout"
+        android:visibility="gone"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"/>
 
 </FrameLayout>
